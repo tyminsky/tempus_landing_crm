@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Інтеграція CRM з інтернет-магазином — аналітика, телефонія | Tempus Agency</title>
+<meta name="description" content="Підключаємо CRM, аналітику та IP-телефонію до вашого інтернет-магазину. Реклама бачить реальних покупців. Перший дзвінок — з інженером, не з продавцем.">
+<style>
+/* ===== Tempus fonts (local) ===== */
+@font-face{font-family:'DrukWide';src:url('ads/fonts/DrukWideCyWeb-Medium.woff2') format('woff2'),url('ads/fonts/DrukWideCyWeb-Medium.woff') format('woff');font-weight:500;font-display:swap}
+@font-face{font-family:'SFPro';src:url('ads/fonts/SFProDisplay-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'SFPro';src:url('ads/fonts/SFProDisplay-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'SFPro';src:url('ads/fonts/SFProDisplay-Semibold.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'SFPro';src:url('ads/fonts/SFProDisplay-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+
+:root{
+  --ink:#000;
+  --paper:#fff;
+  --paper-2:#f8f7f9;
+  --text:#424242;
+  --muted:#86868b;
+  --line:rgba(0,0,0,.12);
+  --line-2:#e5e5e5;
+  --blue:#2572f2;
+  --blue-08:rgba(37,114,242,.08);
+  --blue-12:rgba(37,114,242,.14);
+  --yellow:#ffea29;
+  --navy:#002059;
+  --bubble:#131313;
+  --maxw:1280px;
+  --display:'DrukWide','Archivo Black',system-ui,sans-serif;
+  --font:'SFPro','Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --mono:'OverpassMono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-blue:7px 7px 0 var(--blue);
+  --cut:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);
+  --cut-sm:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--paper);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+section{padding:84px 0;position:relative}
+
+/* ===== typography ===== */
+.kicker{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-08);border:1px solid var(--blue-12);padding:6px 12px;clip-path:var(--cut-sm);margin-bottom:20px}
+.stitle{font-family:var(--display);font-weight:500;text-transform:uppercase;letter-spacing:.01em;line-height:1.08;color:var(--ink);font-size:clamp(26px,3.6vw,42px);margin-bottom:16px}
+.stitle b{color:var(--blue);font-weight:500}
+.slead{color:var(--text);font-size:17px;max-width:60ch;margin-bottom:46px}
+
+/* ===== buttons ===== */
+.btn{display:inline-flex;align-items:center;gap:0;font-family:var(--font);font-weight:600;font-size:15px;cursor:pointer;border:none;background:none;transition:background .2s,color .2s;clip-path:var(--cut)}
+.btn span{padding:0 20px;height:54px;display:inline-flex;align-items:center;white-space:nowrap}
+.btn .chip{width:54px;height:54px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn .chip svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue .chip{background:var(--yellow);color:var(--ink)}
+.btn-blue:hover{background:var(--ink)}
+.btn-yellow{background:var(--yellow);color:var(--ink)}
+.btn-yellow .chip{background:var(--ink);color:var(--yellow)}
+.btn-yellow:hover{background:#ffef5e}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink .chip{background:var(--blue);color:#fff}
+.btn-ink:hover{background:var(--blue)}
+.btn-ghost{border:1.5px solid var(--ink);color:var(--ink);clip-path:var(--cut)}
+.btn-ghost span{height:51px}
+.btn-ghost:hover{background:var(--ink);color:#fff}
+.btn-hsec{border:1.5px solid rgba(255,255,255,.55);color:#fff}
+.btn-hsec span{height:51px}
+.btn-hsec .chip{background:rgba(255,255,255,.18);color:#fff}
+.btn-hsec:hover{background:#fff;color:var(--blue)}
+.btn-hsec:hover .chip{background:var(--blue);color:#fff}
+.btn-block{width:100%}
+.btn-block span{flex:1;justify-content:center}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ===== header ===== */
+header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-2)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:18px}
+.logo{height:26px;display:flex;align-items:center}
+.logo img{height:26px}
+.nav-menu{display:flex;align-items:center;gap:4px}
+.nav-link{font-size:14px;color:var(--ink);font-weight:500;padding:10px 12px;background:none;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.nav-link:hover{color:var(--blue)}
+.dropdown{position:relative}
+.dropdown-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:330px;background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:6px;opacity:0;visibility:hidden;transform:translateY(6px);transition:.18s}
+.dropdown:hover .dropdown-menu,.dropdown:focus-within .dropdown-menu{opacity:1;visibility:visible;transform:none}
+.dropdown-menu a{display:block;padding:11px 13px;font-size:13.5px;color:var(--text)}
+.dropdown-menu a:hover{background:var(--blue-08);color:var(--blue)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.lang{display:flex;border:1px solid var(--line-2)}
+.lang button{background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;padding:7px 9px;cursor:pointer;font-family:var(--mono)}
+.lang button.active{background:var(--ink);color:#fff}
+.nav-cta{font-size:13px}.nav-cta span{height:44px;padding:0 16px}.nav-cta .chip{width:44px;height:44px;padding:0}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:10px}
+.burger span{width:24px;height:2px;background:var(--ink)}
+.mobile-menu{display:none}
+
+/* ===== HERO (blue) ===== */
+.hero{background:var(--blue);color:#fff;overflow:hidden;padding:54px 0 70px;position:relative}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 80% 0,rgba(255,255,255,.12),transparent 60%);pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center}
+.hero-tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.htag{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:8px 14px;clip-path:var(--cut-sm)}
+.htag.b{background:rgba(255,255,255,.14);color:#fff}
+.htag.y{background:var(--yellow);color:var(--ink)}
+.hero h1{font-family:var(--display);font-weight:500;text-transform:uppercase;line-height:1.04;letter-spacing:.005em;font-size:clamp(30px,4.4vw,52px);margin-bottom:22px}
+.hero h1 .b{color:var(--yellow)}
+.hero .sub{font-family:var(--display);text-transform:uppercase;font-size:clamp(17px,2vw,22px);color:#fff;margin-bottom:18px}
+.hero .promise{font-size:17px;color:rgba(255,255,255,.92);max-width:52ch;margin-bottom:30px}
+.hero .promise b{color:var(--yellow);font-weight:600}
+.mgr{display:flex;gap:14px;align-items:center;background:var(--navy);color:#fff;padding:16px 20px;clip-path:var(--cut);max-width:540px;margin-bottom:30px}
+.mgr .ava{width:48px;height:48px;flex-shrink:0;background:var(--yellow);color:var(--ink);font-family:var(--display);font-size:15px;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+.mgr p{font-size:14px;color:rgba(255,255,255,.9)}
+.mgr .sign{display:block;margin-top:6px;font-weight:600;font-size:12.5px;color:#fff}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:30px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;padding-top:22px;border-top:1px solid rgba(255,255,255,.22)}
+.trust .l{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.7)}
+.trust span{font-size:14px;color:rgba(255,255,255,.92)}
+.trust b{color:var(--yellow)}
+.trust .sep{color:rgba(255,255,255,.35)}
+/* hero visual — signals → CRM → sales diagram */
+.hero-vis{position:relative}
+.hsig{background:#fff;color:var(--ink);clip-path:var(--cut);filter:drop-shadow(8px 8px 0 var(--navy));border:1.5px solid var(--ink);padding:24px}
+.hsig-k{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:16px;text-align:center}
+.hsig-factors{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.hsf{position:relative;font-family:var(--font);font-weight:600;font-size:13px;color:var(--ink);background:#fff;border:1.5px solid var(--ink);padding:8px 13px 8px 24px;clip-path:var(--cut-sm)}
+.hsf:before{content:"";position:absolute;left:11px;top:50%;transform:translateY(-50%);width:8px;height:8px;background:var(--blue);clip-path:var(--cut-sm)}
+.hsig-arrows{display:flex;justify-content:center;gap:34px;margin:14px 0 12px}
+.hsig-arrows.one{margin:12px 0}
+.hsig-arrows i{width:2px;height:24px;background:var(--blue);position:relative}
+.hsig-arrows i:after{content:"";position:absolute;bottom:-2px;left:-3.5px;width:9px;height:9px;border-right:2px solid var(--blue);border-bottom:2px solid var(--blue);transform:rotate(45deg)}
+.hsig-hub{background:var(--blue);color:#fff;font-family:var(--display);text-transform:uppercase;font-size:16px;line-height:1.15;text-align:center;padding:16px 18px;clip-path:var(--cut-sm)}
+.hsig-hub small{display:block;font-family:var(--font);font-weight:400;text-transform:none;font-size:12px;color:rgba(255,255,255,.85);margin-top:5px;letter-spacing:0}
+.hsig-cap{font-family:var(--display);text-transform:uppercase;font-size:15px;line-height:1.2;color:var(--ink);text-align:center;margin-top:18px}
+
+/* ===== WHAT WE DO (second blue screen) ===== */
+.whatwedo{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.whatwedo:before{content:"";position:absolute;inset:0;background:radial-gradient(90% 70% at 85% 0,rgba(37,114,242,.45),transparent 60%);pointer-events:none}
+.whatwedo .container{position:relative;z-index:1}
+.whatwedo .kicker{color:var(--yellow);background:rgba(255,234,41,.1);border-color:rgba(255,234,41,.3)}
+.ww-title{font-family:var(--display);font-weight:500;text-transform:uppercase;line-height:1.08;letter-spacing:.005em;font-size:clamp(24px,3.2vw,40px);max-width:20ch;margin-bottom:16px}
+.ww-title b{color:var(--yellow);font-weight:500}
+.ww-lead{font-size:17px;color:rgba(255,255,255,.85);max-width:62ch;margin-bottom:42px}
+.ww-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.ww-card{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.18);padding:26px 24px;clip-path:var(--cut);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.ww-card .ww-num{position:absolute;top:12px;right:18px;font-family:var(--display);font-size:40px;line-height:1;color:rgba(255,255,255,.13)}
+.ww-card .ww-goal{display:block;font-family:var(--font);font-weight:600;font-size:15px;line-height:1.4;color:#fff;margin-bottom:12px;padding-right:38px}
+.ww-card h3{font-family:var(--display);text-transform:uppercase;font-size:16px;margin-bottom:9px;color:var(--yellow)}
+.ww-card p{font-size:14px;color:rgba(255,255,255,.82)}
+.ww-foot{margin-top:38px;display:flex;gap:16px 22px;flex-wrap:wrap;align-items:center}
+.ww-foot .ww-note{font-size:14px;color:rgba(255,255,255,.72);max-width:42ch}
+.ww-foot .ww-note b{color:#fff}
+
+/* ===== FITS (для кого підходить) ===== */
+.fits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.fit{background:#fff;border:1.5px solid var(--ink);border-top:5px solid var(--blue);box-shadow:var(--shadow);padding:26px 24px}
+.fit-h{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.fit-ico{width:46px;height:46px;flex-shrink:0;background:var(--blue-08);color:var(--blue);display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+.fit-ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fit h3{font-family:var(--display);text-transform:uppercase;font-size:17px;color:var(--ink);line-height:1.1}
+.fit-who{font-size:13px;color:var(--muted);margin-bottom:18px}
+.fit ol{list-style:none;counter-reset:fit;display:flex;flex-direction:column;gap:11px;margin:0}
+.fit ol li{position:relative;counter-increment:fit;padding-left:40px;font-size:14px;color:var(--text);line-height:1.4;min-height:27px;display:flex;align-items:center}
+.fit ol li:before{content:counter(fit);position:absolute;left:0;top:0;width:27px;height:27px;background:var(--ink);color:#fff;font-family:var(--display);font-size:13px;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+
+/* ===== manager quote card (under hero diagram) ===== */
+.mgrc{margin-top:18px}
+.mgrc-row{display:flex;align-items:stretch;clip-path:var(--cut);filter:drop-shadow(6px 6px 0 var(--navy));border:1.5px solid var(--ink)}
+.mgrc-photo{flex:0 0 122px;background:var(--yellow);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.mgrc-photo img{width:100%;height:auto;max-height:138px;object-fit:contain;object-position:bottom;display:block}
+.mgrc-text{flex:1;background:var(--navy);color:#fff;font-weight:600;font-size:14.5px;line-height:1.45;padding:18px 20px;display:flex;align-items:center}
+.mgrc-cap{font-size:13px;color:rgba(255,255,255,.85);margin-top:11px;padding-left:4px}
+.mgrc-cap span{color:rgba(255,255,255,.6)}
+
+/* ===== centered reference hero (hero2) ===== */
+.hero-center{position:relative;overflow:hidden;text-align:center;background:linear-gradient(180deg,#06205f 0%,#1a56d6 55%,#2572f2 100%);padding:58px 0 74px}
+.hero-center .hc-bg{position:absolute;inset:0;display:flex;align-items:flex-end;pointer-events:none}
+.hc-bars{display:flex;align-items:flex-end;gap:5px;width:100%;height:58%;padding:0 12px;opacity:.55;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.hc-bars i{flex:1;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.03));display:block}
+.hc-inner{position:relative;z-index:2}
+.hc-tags{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:32px}
+.hc-title{font-family:var(--display);font-weight:500;text-transform:uppercase;color:#fff;font-size:clamp(32px,6.2vw,80px);line-height:1.03;letter-spacing:.01em}
+.hc-sub{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 0;font-family:var(--display);text-transform:uppercase;color:rgba(255,255,255,.92);font-size:clamp(13px,2vw,24px)}
+.hc-sub span{white-space:nowrap}
+.hc-card{max-width:540px;margin:46px auto 0;display:flex;flex-direction:column;gap:16px}
+.hc-card .mgrc{margin-top:0;text-align:left}
+.hc-card .mgrc-cap{text-align:left}
+.hc-cta{align-self:center}
+.hc-stat{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:10px 16px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.35);backdrop-filter:blur(4px)}
+.hc-stat .hs-n{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:24px;line-height:1;color:#fff}
+.hc-stat .hs-n svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.hc-stat small{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.8)}
+.hc-stat--lo{left:0;top:54%}
+.hc-stat--hi{right:0;top:24%;background:var(--yellow);border-color:var(--yellow);clip-path:var(--cut-sm)}
+.hc-stat--hi .hs-n,.hc-stat--hi small{color:var(--ink)}
+@media(max-width:820px){.hc-stat{display:none}}
+
+/* ===== PAINS (quote grid) ===== */
+.pains-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pq{position:relative;background:#fff;border:1.5px solid var(--ink);border-left:5px solid var(--blue);box-shadow:var(--shadow);padding:24px}
+.pq-ico{width:46px;height:46px;background:var(--blue-08);color:var(--blue);display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm);margin-bottom:16px}
+.pq-ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pq-t{font-family:var(--display);text-transform:uppercase;font-size:15px;line-height:1.15;color:var(--ink);margin-bottom:9px}
+.pq-d{font-size:14.5px;color:var(--text);line-height:1.5}
+.pains-outro{margin-top:30px;padding:20px 24px;background:var(--blue-08);border-left:5px solid var(--blue);font-size:16px;color:var(--text)}
+.pains-outro b{color:var(--ink)}
+
+/* ===== dot-grid sections ===== */
+.dotgrid{position:relative}
+.dotgrid:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.10) 1.2px,transparent 1.2px);background-size:26px 26px;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);pointer-events:none;z-index:0}
+.dotgrid .container{position:relative;z-index:1}
+
+/* ===== WHY (problem cards + black solution) ===== */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:18px}
+.pcard{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:24px;position:relative;border-top:5px solid var(--blue)}
+.pcard .no{display:flex;align-items:baseline;gap:7px;font-family:var(--display);font-size:42px;line-height:1;color:var(--blue);margin-bottom:14px}
+.pcard .no:before{content:"NO.";font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--blue);align-self:flex-start;margin-top:3px}
+.pcard h3{font-family:var(--display);text-transform:uppercase;font-size:15px;line-height:1.15;margin-bottom:10px;color:var(--ink)}
+.pcard p{font-size:14.5px;color:var(--text)}
+.solution{background:var(--ink);color:#fff;box-shadow:var(--shadow-blue);padding:32px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:start}
+.solution .sol-ico{width:84px;height:84px;flex-shrink:0;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;clip-path:var(--cut)}
+.solution .sol-ico svg{width:46px;height:46px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.solution .badge{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:var(--yellow);padding:4px 11px;clip-path:var(--cut-sm);margin-bottom:10px}
+.solution h3{font-family:var(--display);text-transform:uppercase;font-size:22px;margin-bottom:8px;color:#fff}
+.solution p{color:rgba(255,255,255,.85);font-size:15px}
+.solution .sol-note{margin-top:16px;padding:14px 18px;background:rgba(255,255,255,.06);border-left:4px solid var(--yellow);font-size:14px;color:rgba(255,255,255,.9)}
+.solution .sol-note b{color:var(--yellow)}
+
+/* ===== SERVICES (bento) ===== */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:auto;gap:18px}
+.scard{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:26px;position:relative}
+.scard .hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.scard .ico{width:46px;height:46px;background:var(--blue-08);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;clip-path:var(--cut-sm)}
+.scard .ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.scard h3{font-family:var(--display);text-transform:uppercase;font-size:18px;color:var(--ink)}
+.scard p{font-size:14.5px;color:var(--text)}
+.scard .systems{margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.scard.crm{grid-column:1/8;grid-row:1/3}
+.scard.tel{grid-column:8/13}
+.scard.ana{grid-column:8/13}
+.scard.msg{grid-column:1/13;display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:center}
+.scard.msg .hdr{margin-bottom:0}
+.scard.tel .ico,.scard.tel h3 b{color:var(--blue)}
+.center-cta{text-align:center;margin-top:44px}
+
+/* ===== GUARANTEE (light-grey band) ===== */
+.guarantee{background:#fbe6e9}
+.guar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.guar{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:26px 24px;display:flex;gap:16px}
+.guar .gi{width:48px;height:48px;flex-shrink:0;background:var(--ink);color:var(--yellow);display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+.guar .gi svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.guar h3{font-family:var(--display);text-transform:uppercase;font-size:15px;margin-bottom:6px;color:var(--ink)}
+.guar p{font-size:14px;color:var(--text)}
+
+/* ===== PROCESS (timeline) ===== */
+.proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative}
+.proc-grid:before{content:"";position:absolute;top:51px;left:12%;right:12%;height:2px;background:var(--ink);z-index:0}
+.proc{position:relative;z-index:1;background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:26px 22px}
+.proc .node{width:38px;height:38px;background:var(--ink);color:#fff;font-family:var(--display);font-size:16px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.proc:last-child .node{background:var(--blue)}
+.proc h3{font-family:var(--display);text-transform:uppercase;font-size:15px;margin-bottom:8px;color:var(--ink)}
+.proc p{font-size:14px;color:var(--text)}
+.micro{margin-top:26px;background:var(--blue);color:#fff;padding:22px 28px;text-align:center;font-size:16px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%)}
+.micro b{color:var(--yellow)}
+
+/* ===== PRICING ===== */
+.disc{font-size:14px;color:var(--text);max-width:680px;margin-bottom:38px;background:var(--paper-2);border-left:4px solid var(--blue);padding:14px 18px}
+.price-grid{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:20px;align-items:start}
+.plan{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:30px 28px;display:flex;flex-direction:column}
+.plan.accent{background:var(--ink);color:#fff;box-shadow:var(--shadow-blue);transform:translateY(-12px)}
+.plan .pbadge{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;color:#fff;background:var(--blue);padding:4px 11px;clip-path:var(--cut-sm);margin-bottom:14px}
+.plan .pname{font-family:var(--display);text-transform:uppercase;font-size:18px;color:var(--ink)}
+.plan.accent .pname{color:var(--blue)}
+.plan .ptag{font-size:13px;color:var(--muted);margin:5px 0 18px}
+.plan.accent .ptag{color:rgba(255,255,255,.6)}
+.plan .price{font-family:var(--display);font-size:32px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.plan.accent .price{color:#fff}
+.plan .price small{display:block;font-family:var(--font);font-size:13px;font-weight:400;color:var(--muted);margin-top:5px}
+.plan .outcome{margin-top:14px;font-size:13px;color:var(--blue);background:var(--blue-08);padding:9px 12px}
+.plan.accent .outcome{color:var(--yellow);background:rgba(255,234,41,.1)}
+.plan ul{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:11px;flex:1}
+.plan li{position:relative;padding-left:24px;font-size:14px;color:var(--text)}
+.plan.accent li{color:rgba(255,255,255,.85)}
+.plan li:before{content:"";position:absolute;left:0;top:5px;width:11px;height:11px;background:var(--blue);clip-path:var(--cut-sm)}
+.plan li b{color:var(--ink)}.plan.accent li b{color:#fff}
+.plan li.inh{padding-left:0;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line-2);padding-top:13px}
+.plan.accent li.inh{border-color:rgba(255,255,255,.2)}
+.plan li.inh:before{display:none}
+/* mem toggle */
+.mem{margin-top:50px;border:2px dashed var(--ink);padding:30px;text-align:center;max-width:640px;margin-left:auto;margin-right:auto}
+.mem h3{font-family:var(--display);text-transform:uppercase;font-size:20px;margin-bottom:8px;color:var(--ink)}
+.mem .hint{font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:22px}
+.mem-opts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.mem-payoff{margin-top:20px;font-size:14px;color:var(--text)}
+.mem-payoff b{color:var(--ink)}
+/* trade-off merged block (mem toggle + downsell) */
+.tradeoff{margin:44px 0 0;background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);clip-path:var(--cut);overflow:hidden}
+.to-top{padding:30px 32px;text-align:center}
+.to-top h3{font-family:var(--display);text-transform:uppercase;font-size:20px;color:var(--ink);margin-bottom:8px}
+.to-top .hint{font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+.to-down{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:24px 32px;background:var(--ink);color:#fff;border-left:6px solid var(--blue);transition:border-color .3s}
+.to-down.cheap-on{border-left-color:var(--yellow)}
+.to-down-txt{flex:1;min-width:260px;text-align:left}
+.to-down .to-k{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--yellow);margin-bottom:8px}
+.to-down p{font-size:14px;color:rgba(255,255,255,.85);line-height:1.5}
+.to-down b{color:var(--yellow)}
+.to-cta{flex-shrink:0}
+.mopt{display:flex;align-items:center;gap:11px;border:1.5px solid var(--ink);background:#fff;padding:13px 20px;cursor:pointer;font-family:var(--display);text-transform:uppercase;font-size:15px;color:var(--ink)}
+.mopt .box{width:22px;height:22px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center}
+.mopt .box svg{width:13px;height:13px;stroke:var(--blue);fill:none;stroke-width:3;opacity:0}
+.mopt.on{background:var(--ink);color:#fff}
+.mopt.on .box{background:#fff}
+.mopt.on .box svg{opacity:1}
+/* downsell */
+.downsell{margin-top:30px;max-width:660px;margin-left:auto;margin-right:auto;background:#fff;border:1.5px solid var(--ink);border-left:6px solid var(--blue);padding:24px}
+.downsell p{font-size:15px;color:var(--text);margin-bottom:16px}
+.downsell b{color:var(--ink)}
+
+/* ===== CASES (slider) ===== */
+.cases-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.slider-nav{display:flex;gap:8px}
+.slider-nav button{width:48px;height:48px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.slider-nav button:hover{background:var(--ink);color:#fff}
+.slider-nav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cases-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:30px 0 10px;scrollbar-width:none}
+.cases-track::-webkit-scrollbar{display:none}
+.case{scroll-snap-align:start;flex:0 0 360px;background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:26px;display:flex;flex-direction:column}
+.case .cname{font-family:var(--display);text-transform:uppercase;font-size:18px;color:var(--ink)}
+.case .cniche{font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--ink);padding-bottom:14px;margin:5px 0 16px}
+.case .cmetrics{display:flex;flex-direction:column;gap:10px;flex:1}
+.case .cm{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14px;color:var(--text)}
+.case .cm .gv{font-family:var(--display);font-size:15px;color:#fff;background:var(--blue);padding:3px 10px;clip-path:var(--cut-sm)}
+.case.feat{flex:0 0 440px;background:var(--ink);color:#fff;box-shadow:var(--shadow-blue)}
+.case.feat .cname{color:#fff}.case.feat .cniche{color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.25)}
+.case.feat .cm{color:rgba(255,255,255,.85)}
+.case.feat .big{font-family:var(--display);font-size:26px;color:var(--yellow);margin-bottom:6px}
+.case.feat .cm .gv{background:var(--yellow);color:var(--ink)}
+
+/* ===== FAQ ===== */
+.faq{max-width:920px;margin:0 auto}
+.faq-sub{display:inline-block;font-family:var(--display);text-transform:uppercase;font-size:13px;color:#fff;background:var(--ink);padding:8px 16px;clip-path:var(--cut-sm);margin:30px 0 6px}
+.faq-item{border-bottom:1px solid var(--line-2)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:center;gap:16px;width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:var(--font);font-weight:600;font-size:15.5px;color:var(--ink);padding:20px 4px}
+.faq-q .qbox{width:30px;height:30px;flex-shrink:0;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;transition:.2s}
+.faq-q .qbox svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:2.4;transition:.2s}
+.faq-item.open .qbox{background:var(--ink)}
+.faq-item.open .qbox svg{stroke:#fff;transform:rotate(180deg)}
+.faq-q .qt{flex:1}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+.faq-a>div{overflow:hidden}
+.faq-a p{padding:0 4px 22px 50px;color:var(--text);font-size:14.5px}
+
+/* ===== QUICK PICK (один тап → рішення → контакт) ===== */
+.quickmsg{background:var(--yellow);border-top:1.5px solid var(--ink)}
+.quickmsg .kicker{color:var(--ink);background:rgba(0,0,0,.07);border-color:rgba(0,0,0,.18)}
+.quickmsg .stitle{color:var(--ink)}
+.quickmsg .stitle b{background:var(--ink);color:var(--yellow);padding:0 .18em;clip-path:var(--cut-sm)}
+.qm-lead{color:#494418;font-size:17px;max-width:56ch;margin-bottom:32px}
+.qm-card{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);clip-path:var(--cut);padding:30px 32px;max-width:760px}
+.qm-chip-l{display:block;font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:14px}
+.qm-chips{display:flex;flex-wrap:wrap;gap:10px}
+.qm-chip{font-family:var(--font);font-size:14px;font-weight:500;text-align:left;color:var(--ink);background:#fff;border:1.5px solid var(--ink);padding:12px 16px;cursor:pointer;clip-path:var(--cut-sm);transition:background .15s,color .15s,transform .12s}
+.qm-chip:hover{background:var(--blue-08);transform:translateY(-2px)}
+.qm-chip.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.qm-result[hidden]{display:none}
+.qm-result{margin-top:24px;border-top:1.5px dashed var(--line-2);padding-top:24px;animation:qmIn .35s cubic-bezier(.22,1,.36,1)}
+@keyframes qmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.qm-sol{display:flex;gap:12px;margin-bottom:20px}
+.qm-sol-ic{flex-shrink:0;width:30px;height:30px;background:var(--blue);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+.qm-sol p{font-size:16px;line-height:1.45;color:var(--ink);font-weight:500}
+.qm-inline{display:flex;gap:12px}
+.qm-inline input{flex:1;background:#fff;border:1.5px solid var(--ink);padding:13px 15px;font-family:inherit;font-size:15px;color:var(--ink);min-height:50px}
+.qm-inline input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-12)}
+.qm-inline .btn{white-space:nowrap}
+.qm-note{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin-top:14px;display:flex;align-items:center;gap:9px}
+.qm-note:before{content:"";width:9px;height:9px;background:#25d366;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(37,211,102,.25)}
+
+/* ===== forms ===== */
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px}
+.about-card .field label{color:rgba(255,255,255,.7)}
+.field input{width:100%;background:#fff;border:1.5px solid var(--ink);padding:13px 15px;font-family:inherit;font-size:15px;color:var(--ink);min-height:48px}
+.field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-12)}
+.consent{font-size:12px;color:var(--muted);margin:6px 0 16px}
+.about-card .consent{color:rgba(255,255,255,.65)}
+
+/* ===== ABOUT ===== */
+.about{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start}
+.about-card{background:var(--blue);color:#fff;padding:34px;box-shadow:var(--shadow)}
+.about-card .ah{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+.about-card .ava{width:72px;height:72px;flex-shrink:0;background:var(--yellow);color:var(--ink);font-family:var(--display);font-size:22px;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm)}
+.about-card h2{font-family:var(--display);text-transform:uppercase;font-size:24px;margin:0}
+.about-card .ah span{font-size:13px;color:rgba(255,255,255,.75)}
+.about-card ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.about-card li{position:relative;padding-left:22px;font-size:14.5px;color:rgba(255,255,255,.9)}
+.about-card li:before{content:"→";position:absolute;left:0;color:var(--yellow)}
+.about-card .socials{display:flex;gap:10px}
+.about-card .socials a{font-family:var(--mono);font-size:12px;text-transform:uppercase;border:1px solid rgba(255,255,255,.4);padding:8px 14px;color:#fff}
+.about-card .socials a:hover{background:#fff;color:var(--blue)}
+.meet-form{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:34px}
+.meet-form h3{font-family:var(--display);text-transform:uppercase;font-size:20px;margin-bottom:8px;color:var(--ink)}
+.meet-form>p{font-size:14px;color:var(--text);margin-bottom:18px}
+
+/* ===== FINAL / CONTACTS ===== */
+.final{background:var(--ink);color:#fff;text-align:center}
+.final .kicker{color:var(--yellow);background:rgba(255,234,41,.1);border-color:rgba(255,234,41,.3)}
+.final h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(26px,3.6vw,42px);max-width:18ch;margin:0 auto 16px;line-height:1.08}
+.final p{color:rgba(255,255,255,.8);font-size:17px;max-width:60ch;margin:0 auto 28px}
+.final p b{color:#fff}
+.contacts-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
+.cchip{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.25);padding:12px 18px;font-size:14px}
+.cchip svg{width:18px;height:18px;stroke:var(--yellow);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== FOOTER ===== */
+footer{background:var(--ink);color:rgba(255,255,255,.78);padding:50px 0 26px;border-top:1px solid rgba(255,255,255,.12)}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px;margin-bottom:34px}
+.foot-col img{height:24px;margin-bottom:14px}
+.foot-col h4{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);margin-bottom:14px}
+.foot-col p,.foot-col a{color:rgba(255,255,255,.78);font-size:14px;display:block;margin-bottom:8px}
+.foot-col a:hover{color:var(--yellow)}
+.foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(255,255,255,.12);padding-top:22px;font-size:13px;color:rgba(255,255,255,.5)}
+.foot-bottom a:hover{color:var(--yellow)}
+
+/* floating + mobile cta */
+.float-btns{position:fixed;right:18px;bottom:18px;z-index:50;display:flex;flex-direction:column;gap:10px}
+.float-btns button{width:54px;height:54px;border:none;cursor:pointer;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm);box-shadow:var(--shadow)}
+.float-btns button:hover{background:var(--ink)}
+.float-btns .tg{background:#229ed9}.float-btns .wa{background:#25d366}
+.float-btns svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mobile-cta{display:none}
+
+/* popups */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex}
+.popup{background:#fff;border:2px solid var(--ink);box-shadow:var(--shadow);padding:32px;max-width:420px;width:100%;position:relative}
+.popup .close{position:absolute;top:12px;right:12px;width:36px;height:36px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.popup .close:hover{background:var(--ink);color:#fff}
+.popup .close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2}
+.popup h3{font-family:var(--display);text-transform:uppercase;font-size:20px;margin-bottom:6px;color:var(--ink)}
+.popup .pm{font-size:14px;color:var(--text);margin-bottom:18px}
+.msgr-pick{display:flex;gap:10px;margin:14px 0}
+.msgr-pick button{flex:1;border:1.5px solid var(--ink);background:#fff;padding:12px;cursor:pointer;font-family:var(--font);font-weight:600;font-size:14px}
+.msgr-pick button.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== ADDED: media, proof, capture ===== */
+/* founder/manager photos */
+.mgr .ava,.about-card .ava{overflow:hidden;background:var(--yellow);padding:0}
+.mgr .ava img,.about-card .ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* scroll progress */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--blue);z-index:70;transition:width .1s linear}
+/* trust logo strip */
+.logos{background:#fff;border-bottom:1px solid var(--line-2)}
+.logos .container{display:flex;align-items:center;justify-content:center;gap:18px 40px;flex-wrap:wrap;padding-top:24px;padding-bottom:24px}
+.logos .ll{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.logos img{height:24px;width:auto;filter:grayscale(1);opacity:.55;transition:.2s}
+.logos a:hover img{filter:none;opacity:1}
+/* proof band */
+.proof{background:#c4202f;color:#fff}
+.proof-in{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.proof .pk{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--yellow);letter-spacing:.06em;margin-bottom:14px}
+.proof h3{font-family:var(--display);text-transform:uppercase;font-size:clamp(22px,2.8vw,30px);line-height:1.12;margin-bottom:12px}
+.proof h3 b{color:var(--yellow)}
+.proof .bignum{font-family:var(--display);font-size:clamp(30px,4.6vw,48px);color:var(--yellow);font-variant-numeric:tabular-nums;margin:6px 0 12px}
+.proof p{color:rgba(255,255,255,.82);font-size:15px;max-width:48ch;margin-bottom:16px}
+.proof .badges{display:flex;gap:10px;flex-wrap:wrap}
+.proof .pb{font-family:var(--mono);font-size:12px;background:var(--ink);color:#fff;padding:7px 13px;clip-path:var(--cut-sm)}
+.proof .shot{border:1.5px solid rgba(255,255,255,.3);clip-path:var(--cut);overflow:hidden;filter:drop-shadow(8px 8px 0 var(--ink))}
+.proof .shot img{width:100%;display:block}
+/* case thumbnails + logos */
+.case .cthumb{border:1.5px solid var(--ink);overflow:hidden;clip-path:var(--cut-sm);margin-bottom:16px;aspect-ratio:16/10;background:var(--paper-2)}
+.case .cthumb.ph{display:flex;align-items:center;justify-content:center;background:#e8e8ec}
+.case .cthumb.ph span{font-family:var(--display);text-transform:uppercase;font-size:16px;letter-spacing:.03em;color:#a6a6ad}
+.case.feat .cthumb{border-color:rgba(255,255,255,.25)}
+.case .cthumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.case .chead{display:flex;align-items:center;gap:10px}
+.case .clogo{height:22px;width:auto}
+.case.feat .clogo{filter:brightness(0) invert(1)}
+/* per-card CTA */
+.case .ccta{margin-top:auto;padding-top:16px;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue);display:inline-flex;align-items:center;gap:6px}
+.case .cresult{font-size:13.5px;color:var(--text);line-height:1.45;border-left:3px solid var(--blue);padding-left:12px}
+.case.feat .ccta{color:var(--yellow)}
+.case .ccta svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2}
+.case .big{font-family:var(--display);font-size:22px;color:var(--ink);margin-bottom:6px}
+.case .cwlabel{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:16px;margin-bottom:10px}
+.case.feat .cwlabel{color:rgba(255,255,255,.55)}
+.case .cwork{list-style:none;display:flex;flex-direction:column;gap:9px;margin:0 0 4px}
+.case .cwork li{position:relative;padding-left:22px;font-size:13.5px;color:var(--text);line-height:1.4}
+.case .cwork li:before{content:"";position:absolute;left:0;top:5px;width:11px;height:11px;background:var(--blue);clip-path:var(--cut-sm)}
+.case.feat .cwork li{color:rgba(255,255,255,.85)}
+.case.feat .cwork li:before{background:var(--yellow)}
+/* team wall */
+.team-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:rgba(255,255,255,.55);text-align:center;letter-spacing:.06em;margin-top:36px;margin-bottom:14px}
+.team{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.team img{width:60px;height:60px;object-fit:cover;clip-path:var(--cut-sm);filter:grayscale(1);border:1px solid rgba(255,255,255,.2)}
+/* section CTA */
+.sec-cta{text-align:center;margin-top:24px}
+/* popup steps + manager face */
+.pstep{display:none}.pstep.active{display:block}
+.pm-face{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pm-face img{width:46px;height:46px;object-fit:cover;clip-path:var(--cut-sm)}
+.pm-face .pmn{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--muted)}
+.or-div{display:flex;align-items:center;gap:12px;margin:14px 0;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--muted)}
+.or-div:before,.or-div:after{content:"";flex:1;height:1px;background:var(--line-2)}
+.tel-direct{display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--ink);padding:13px;font-weight:600;color:var(--ink)}
+.tel-direct:hover{background:var(--ink);color:#fff}
+.float-btns a.fcall{width:54px;height:54px;border:none;cursor:pointer;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;clip-path:var(--cut-sm);box-shadow:var(--shadow)}
+.float-btns a.fcall:hover{background:var(--blue)}
+.float-btns a.fcall svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== solution 5–10x stat ===== */
+.solution .sol-stat{display:flex;align-items:baseline;gap:12px;margin-top:16px;padding:14px 18px;background:rgba(37,114,242,.18);border-left:4px solid var(--blue)}
+.solution .sol-stat .n{font-family:var(--display);font-size:30px;line-height:1;color:var(--yellow);white-space:nowrap}
+.solution .sol-stat .t{font-size:13.5px;color:rgba(255,255,255,.9)}
+.solution .sol-stat .t b{color:#fff}
+
+/* ===== DISTRIBUTORS band ===== */
+.distrib{background:var(--paper-2)}
+.distrib-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.distrib-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0 0 28px}
+.distrib-list li{position:relative;padding-left:30px;font-size:15px;color:var(--text)}
+.distrib-list li:before{content:"";position:absolute;left:0;top:3px;width:18px;height:18px;background:var(--ink);clip-path:var(--cut-sm)}
+.distrib-list li:after{content:"";position:absolute;left:5px;top:8px;width:8px;height:5px;border-left:2px solid var(--yellow);border-bottom:2px solid var(--yellow);transform:rotate(-45deg)}
+.distrib-list li b{color:var(--ink)}
+.migr{background:#fff;border:1.5px solid var(--ink);box-shadow:var(--shadow);padding:26px}
+.migr .mk{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:16px}
+.migr-row{display:grid;grid-template-columns:1fr auto 1.1fr;gap:14px;align-items:center}
+.migr-old{display:flex;flex-direction:column;gap:8px}
+.migr-old span{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--muted);background:var(--paper-2);border:1.5px dashed var(--line);padding:9px 12px;text-align:center;text-decoration:line-through;text-decoration-color:rgba(0,0,0,.3)}
+.migr-arrow{display:flex;align-items:center;justify-content:center;color:var(--blue)}
+.migr-arrow svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.migr-new{background:var(--blue);color:#fff;padding:18px 16px;clip-path:var(--cut-sm);text-align:center}
+.migr-new b{display:block;font-family:var(--display);text-transform:uppercase;font-size:16px;line-height:1.15}
+.migr-new span{display:block;font-size:12px;color:rgba(255,255,255,.85);margin-top:6px}
+
+/* ===== FAQ tabs ===== */
+.faq-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.faq-tab{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.02em;color:var(--ink);background:none;border:1.5px solid var(--ink);padding:9px 16px;clip-path:var(--cut-sm);cursor:pointer;transition:background .18s,color .18s}
+.faq-tab:not(.is-active):hover{background:var(--line-2)}
+.faq-tab.is-active{background:var(--ink);color:#fff}
+.faq-panel{display:none;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.faq-panel.is-active{display:block}
+
+/* ===== responsive ===== */
+@media(max-width:980px){
+  .nav-menu,.nav-cta{display:none}.burger{display:flex}
+  .hero-grid,.about,.proof-in,.distrib-grid{grid-template-columns:1fr}
+  .why-grid,.guar-grid,.price-grid,.proc-grid,.fits-grid{grid-template-columns:1fr}
+  .pains-grid,.ww-grid{grid-template-columns:1fr 1fr}
+  .proc-grid:before{display:none}
+  .solution{grid-template-columns:1fr;text-align:left}
+  .solution .sol-stat{flex-direction:column;align-items:flex-start;gap:8px}
+  .solution .sol-stat .n{font-size:26px}
+  .bento{grid-template-columns:1fr}
+  .scard.crm,.scard.tel,.scard.ana,.scard.msg{grid-column:auto;grid-row:auto}
+  .scard.msg{grid-template-columns:1fr}
+  .plan.accent{transform:none}
+  section{padding:60px 0}
+  .mobile-menu.show{display:block;border-top:1px solid var(--line-2);background:#fff}
+  .mobile-menu a{display:block;padding:14px 24px;border-bottom:1px solid var(--line-2);color:var(--ink);font-size:15px}
+  .mobile-menu .grp{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--muted);padding:14px 24px 4px}
+  .mobile-cta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:55;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1.5px solid var(--ink)}
+  .mobile-cta .btn{flex:1}.mobile-cta .btn span{flex:1;justify-content:center}
+  .float-btns{bottom:84px}
+  body{padding-bottom:76px}
+}
+@media(max-width:560px){
+  .pains-grid,.ww-grid{grid-template-columns:1fr}
+  .tradeoff .mem-opts{flex-direction:column}
+  .tradeoff .mopt{width:100%;justify-content:flex-start}
+  .to-top,.to-down{padding-left:18px;padding-right:18px}
+  .to-down{flex-direction:column;align-items:stretch}
+  .to-cta{width:100%}.to-cta>span:first-child{flex:1;justify-content:center}
+  .center-cta .btn,.sec-cta .btn{display:flex;width:100%;max-width:100%}
+  .center-cta .btn>span:first-child,.sec-cta .btn>span:first-child{flex:1;white-space:normal;height:auto;min-height:54px;padding:10px 16px;line-height:1.25;justify-content:center}
+  .hero-actions .btn,.hero-actions{width:100%}
+  .case{flex-basis:84vw}.case.feat{flex-basis:84vw}
+  .qm-card{padding:24px 18px}
+  .qm-inline{flex-direction:column}
+  .qm-inline .btn{width:100%}
+  .qm-inline .btn>span:first-child{flex:1;justify-content:center}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="container nav">
+    <a href="#top" class="logo" aria-label="Tempus Agency"><img src="ads/img/logo.svg" alt="Tempus Agency"></a>
+    <nav class="nav-menu" aria-label="Головна навігація">
+      <div class="dropdown">
+        <button class="nav-link" aria-haspopup="true" aria-expanded="false" id="napryamy">Напрями
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="napryamy">
+          <a href="#services">CRM-інтеграція для інтернет-магазинів</a>
+          <a href="#why">Наскрізна аналітика і конверсії Google Ads</a>
+          <a href="#services">IP-телефонія з відстеженням дзвінків</a>
+          <a href="#services">Переписки Instagram, Telegram, Viber у CRM</a>
+          <a href="#services">Міграція з 1С або Bitrix24</a>
+        </div>
+      </div>
+      <a href="#pricing" class="nav-link">Тарифи</a>
+      <a href="#cases" class="nav-link">Кейси</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="#contacts" class="nav-link">Контакти</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Мова">
+        <button class="active" aria-pressed="true">UA</button><button aria-pressed="false">EN</button><button aria-pressed="false">RU</button>
+      </div>
+      <a href="#meet" class="btn btn-blue nav-cta"><span>Запланувати зустріч</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="grp">Напрями</div>
+    <a href="#services">CRM-інтеграція для магазинів</a>
+    <a href="#why">Аналітика і конверсії Google Ads</a>
+    <a href="#services">IP-телефонія</a>
+    <a href="#services">Переписки у CRM</a>
+    <div class="grp">Розділи</div>
+    <a href="#pricing">Тарифи</a><a href="#cases">Кейси</a><a href="#faq">FAQ</a><a href="#contacts">Контакти</a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-tags">
+        <span class="htag y">CRM + аналітика + телефонія</span>
+        <span class="htag b">для інтернет-магазинів</span>
+        <span class="htag b">для дистриб'юторів</span>
+        <span class="htag b">для виробників</span>
+        <span class="htag b">для відділів продажу</span>
+      </div>
+      <h1 id="heroTitle">Ви вкладаєте в рекламу. Але не знаєте, що реально приносить продажі.</h1>
+      <p class="sub">Ми це виправляємо — CRM, аналітика й телефонія в одній системі.</p>
+      <p class="promise">Підключаємо CRM і наскрізну аналітику — і <b>та сама реклама починає приносити більше</b>. Google починає бачити реальних покупців, а не просто кліки. Без ризику для того, що вже працює — перший рівень <b>готовий від 1 дня</b>.</p>
+      <div class="hero-actions">
+        <a href="#meet" class="btn btn-yellow"><span>Запланувати зустріч</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        <a href="#meet" class="btn btn-hsec"><span>або безкоштовний аудит реклами</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span></a>
+      </div>
+      <div class="trust">
+        <span class="l">Нам довіряють</span>
+        <span><b>120+</b> проєктів</span><span class="sep">/</span>
+        <span>add.ua · shtuki.ua · oiler.ua</span><span class="sep">/</span>
+        <span>ROAS до <b>756%</b></span>
+      </div>
+    </div>
+    <div class="hero-vis reveal">
+      <div class="hsig">
+        <span class="hsig-k">// на ваші продажі впливає багато сигналів</span>
+        <div class="hsig-factors">
+          <span class="hsf">Реклама</span>
+          <span class="hsf">Дзвінки</span>
+          <span class="hsf">Переписки</span>
+          <span class="hsf">Сайт</span>
+          <span class="hsf">Instagram</span>
+          <span class="hsf">Повторні покупки</span>
+        </div>
+        <div class="hsig-arrows" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="hsig-hub">CRM + наскрізна аналітика<small>збирає все в одну картину</small></div>
+        <p class="hsig-cap">Зрозумілі продажі — видно, що реально працює</p>
+      </div>
+      <div class="mgrc reveal">
+        <div class="mgrc-row">
+          <div class="mgrc-photo"><img src="ads/img/ads_hero__manager-img.jpg" alt="Сергій Потоцький"></div>
+          <div class="mgrc-text">Підходимо комплексно: CRM, наскрізна аналітика, IP-телефонія, переписки й доробки на сайті — зводимо все в одну систему, де видно кожен продаж. З навчанням і підтримкою.</div>
+        </div>
+        <div class="mgrc-cap">Сергій Потоцький <span>| Owner Tempus.Agency</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HERO CENTERED (reference style) ===== -->
+<section class="hero hero-center" id="hero2">
+  <div class="hc-bg" aria-hidden="true">
+    <div class="hc-bars"><i style="height:10%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:20%"></i><i style="height:15%"></i><i style="height:24%"></i><i style="height:18%"></i><i style="height:28%"></i><i style="height:22%"></i><i style="height:32%"></i><i style="height:26%"></i><i style="height:38%"></i><i style="height:30%"></i><i style="height:42%"></i><i style="height:34%"></i><i style="height:48%"></i><i style="height:40%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:58%"></i><i style="height:50%"></i><i style="height:64%"></i><i style="height:56%"></i><i style="height:70%"></i><i style="height:60%"></i><i style="height:76%"></i><i style="height:66%"></i><i style="height:82%"></i><i style="height:72%"></i><i style="height:90%"></i><i style="height:80%"></i><i style="height:97%"></i></div>
+  </div>
+  <span class="hc-stat hc-stat--lo" aria-hidden="true"><span class="hs-n"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>10</span><small>продажів на день</small></span>
+  <span class="hc-stat hc-stat--hi" aria-hidden="true"><span class="hs-n"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>75</span><small>продажів на день</small></span>
+  <div class="container hc-inner">
+    <div class="hc-tags">
+      <span class="htag y">CRM + аналітика + телефонія</span>
+      <span class="htag b">для малого та середнього бізнесу</span>
+    </div>
+    <h1 class="hc-title">Усе, що впливає на продажі —<br>в одній системі</h1>
+    <div class="hc-sub"><span>Швидко</span><span>якісно</span><span>з підтримкою</span></div>
+    <div class="hc-card reveal">
+      <div class="mgrc">
+        <div class="mgrc-row">
+          <div class="mgrc-photo"><img src="ads/img/ads_hero__manager-img.jpg" alt="Сергій Потоцький"></div>
+          <div class="mgrc-text">Підходимо комплексно: CRM, наскрізна аналітика, IP-телефонія, переписки й доробки на сайті — зводимо все в одну систему, де видно кожен продаж. З навчанням і підтримкою.</div>
+        </div>
+        <div class="mgrc-cap">Сергій Потоцький <span>| Owner Tempus.Agency</span></div>
+      </div>
+      <a href="#meet" class="btn btn-yellow hc-cta"><span>Запланувати зустріч</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAINS ===== -->
+<section id="pains">
+  <div class="container">
+    <span class="kicker reveal">// 01 · Болі</span>
+    <h2 class="stitle reveal">Впізнаєте <b>свій робочий день?</b></h2>
+    <p class="slead reveal">Якщо хоч один пункт — про вас, нижче покажемо, звідки це береться і як лагодиться.</p>
+    <div class="pains-grid">
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9 9 0 0 1-3.8-.8L3 21l1.9-5a8.4 8.4 0 0 1-.8-3.6 8.4 8.4 0 0 1 8.4-8.4A8.4 8.4 0 0 1 21 11.5Z"/></svg></span>
+        <h3 class="pq-t">Заявки тонуть у каналах</h3>
+        <p class="pq-d">Сайт, Instagram, Telegram — уже гублюся, кому відповіли, а кому ні.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></span>
+        <h3 class="pq-t">База на чесному слові</h3>
+        <p class="pq-d">Таблиця з клієнтами тримається на чесному слові. А заявок усе більше.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span>
+        <h3 class="pq-t">Дзвінки не перевірити</h3>
+        <p class="pq-d">Менеджер каже, що задзвонив. Перевірити не можу.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>
+        <h3 class="pq-t">Реклама наосліп</h3>
+        <p class="pq-d">Вкладаємо в рекламу, а звідки реально клієнти — не знаю. Підрядник каже «все добре».</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5M22 8l-5 5"/></svg></span>
+        <h3 class="pq-t">Пішов менеджер — зникла база</h3>
+        <p class="pq-d">Звільнився — і клієнти з переписками пішли разом з ним.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span>
+        <h3 class="pq-t">1С усе. А далі?</h3>
+        <p class="pq-d">Склад, клієнти й замовлення мають десь жити далі.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg></span>
+        <h3 class="pq-t">Цифри є — рішень нема</h3>
+        <p class="pq-d">Звіти, графіки, дашборди… а що реально працює і що з цим робити — незрозуміло.</p>
+      </div>
+      <div class="pq reveal">
+        <span class="pq-ico"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+        <h3 class="pq-t">Страшно масштабувати</h3>
+        <p class="pq-d">Хочу більше реклами, але в замовленнях і так хаос — боюся, що все посиплеться.</p>
+      </div>
+    </div>
+    <div class="pains-outro reveal">Хоч один пункт — про вас? Нижче — звідки це береться і як лагодиться. <b>Без магії і без зайвих термінів.</b></div>
+  </div>
+</section>
+
+<!-- ===== WHAT WE DO (second blue screen) ===== -->
+<section class="whatwedo">
+  <div class="container">
+    <span class="kicker reveal">// 02 · Що ми робимо</span>
+    <h2 class="ww-title reveal">Зв'язуємо все, від чого залежать ваші <b>продажі</b></h2>
+    <p class="ww-lead reveal">CRM, наскрізна аналітика, IP-телефонія та переписки — в одну систему, де нічого не губиться. З якою задачею ви б не прийшли — почнемо саме з неї, решту підтягнемо.</p>
+    <div class="ww-grid">
+      <div class="ww-card reveal">
+        <span class="ww-num">01</span>
+        <span class="ww-goal">«Хочу, щоб реклама окупалась»</span>
+        <h3>Наскрізна аналітика</h3>
+        <p>Правильні конверсії й дані про реальних покупців — реклама оптимізується на тих, хто купує, а не на будь-кого.</p>
+      </div>
+      <div class="ww-card reveal">
+        <span class="ww-num">02</span>
+        <span class="ww-goal">«Хочу лад у клієнтах і заявках»</span>
+        <h3>CRM-інтеграція</h3>
+        <p>Заявки із сайту, Instagram, Telegram і дзвінків — в одному вікні. Нічого не губиться між каналами.</p>
+      </div>
+      <div class="ww-card reveal">
+        <span class="ww-num">03</span>
+        <span class="ww-goal">«Хочу контролювати відділ продажу»</span>
+        <h3>IP-телефонія</h3>
+        <p>Записи дзвінків, AI-розшифровка та видимі етапи угод — видно роботу кожного менеджера.</p>
+      </div>
+      <div class="ww-card reveal">
+        <span class="ww-num">04</span>
+        <span class="ww-goal">«Хочу нарешті розуміти цифри»</span>
+        <h3>Зрозуміла аналітика</h3>
+        <p>Що окупається, а що з'їдає бюджет — людською мовою, без передозу графіків і термінів.</p>
+      </div>
+    </div>
+    <div class="ww-foot reveal">
+      <a href="#meet" class="btn btn-yellow"><span>Почати з моєї задачі</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <span class="ww-note">Не знаєте, з чого почати? <b>Зробимо безкоштовний аудит</b> і підкажемо, що дасть найбільший ефект саме вам.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FITS (для кого підходить) ===== -->
+<section id="fits">
+  <div class="container">
+    <span class="kicker reveal">// 03 · Для кого підходить</span>
+    <h2 class="stitle reveal">Кому це <b>точно зайде</b></h2>
+    <p class="slead reveal">Чотири типи бізнесу, де інтеграція CRM, аналітики й телефонії дає найбільший ефект — і чому саме.</p>
+    <div class="fits-grid">
+      <div class="fit reveal">
+        <div class="fit-h"><span class="fit-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></span><h3>Інтернет-магазини</h3></div>
+        <p class="fit-who">E-commerce, що вкладає в Google Ads</p>
+        <ol>
+          <li>Правильні конверсії й дані про покупців — реклама вчиться на тих, хто купує</li>
+          <li>Видно, яка реклама реально приносить продажі, а не просто кліки</li>
+          <li>Заявки із сайту, Instagram і Telegram — в одній CRM, нічого не губиться</li>
+        </ol>
+      </div>
+      <div class="fit reveal">
+        <div class="fit-h"><span class="fit-ico"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><h3>Дистриб'ютори та виробники</h3></div>
+        <p class="fit-who">Склад, опт, багато замовлень</p>
+        <ol>
+          <li>Переїзд зі старої 1С чи Excel на сучасну CRM зі складом — без зупинки</li>
+          <li>Контроль клієнтів, замовлень і залишків в одному місці</li>
+          <li>Готова основа, щоб масштабувати рекламу без хаосу</li>
+        </ol>
+      </div>
+      <div class="fit reveal">
+        <div class="fit-h"><span class="fit-ico"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span><h3>Компанії з відділом продажу</h3></div>
+        <p class="fit-who">Вхідні заявки й менеджери</p>
+        <ol>
+          <li>IP-телефонія: кожен дзвінок записується й розшифровується AI</li>
+          <li>Видно роботу кожного менеджера й де губляться угоди</li>
+          <li>Дзвінки стають даними — видно, з якої реклами прийшов клієнт</li>
+        </ol>
+      </div>
+      <div class="fit reveal">
+        <div class="fit-h"><span class="fit-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg></span><h3>Маркетологи й аналітики</h3></div>
+        <p class="fit-who">Ті, хто керує рекламою і даними</p>
+        <ol>
+          <li>Серверна аналітика, BigQuery, дашборди — повна картина даних</li>
+          <li>Прості пояснення, без передозу графіків і термінів</li>
+          <li>Працюєте з інженерами, а не з юніорами</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY GOOGLE ===== -->
+<section class="dotgrid" id="why">
+  <div class="container">
+    <span class="kicker reveal">// 04 · Реклама + дані</span>
+    <h2 class="stitle reveal">Чому Google <b>«не бачить» половину</b> ваших покупців</h2>
+    <p class="slead reveal" style="max-width:none">Наскрізна логіка всього: без CRM-даних реклама працює наосліп. Три проблеми — одне рішення.</p>
+    <div class="why-grid">
+      <div class="pcard reveal"><span class="no">01</span><h3>Реклама тепер це AI</h3><p>Google і Meta самі вирішують, кому показати ваше оголошення. Вчаться вони на даних, які ви їм передаєте. Точні дані — розумна реклама. Бідні — бюджет навмання.</p></div>
+      <div class="pcard reveal"><span class="no">02</span><h3>«Тільки конверсії» — наосліп</h3><p>Якщо для Google «конверсія» — це лише відправлена форма, він не бачить різниці між покупцем і тим, хто залишив заявку й зник. Тож оптимізується на «заявки» і приводить більше таких самих — цікавих, але не покупців.</p></div>
+      <div class="pcard reveal"><span class="no">03</span><h3>Дзвінки і переписки — невидимі</h3><p>Половина покупців телефонує або пише в месенджер. Без зв'язки з CRM цих продажів реклама не бачить. А iPhone ще й ховає частину тих, хто купив на сайті.</p></div>
+    </div>
+    <div class="solution reveal">
+      <div class="sol-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div>
+        <span class="badge">Рішення</span>
+        <h3>CRM повертає рекламі зір</h3>
+        <p>Підключаємо CRM до аналітики й реклами: Google бачить реальних покупців — і приводить більше таких самих. Це найдешевший спосіб зробити ту саму рекламу прибутковішою.</p>
+        <div class="sol-stat"><span class="n">40 → 90%+</span><span class="t"><b>стільки ваших реальних продажів бачить Google</b> після інтеграції (раніше — близько 40%). На повніших даних Smart Bidding працює точніше, і та сама реклама дає кратно більший результат.</span></div>
+        <div class="sol-note">Усім, кому ведемо рекламу, ми налаштовуємо CRM <b>за замовчуванням</b>. Без неї якісного маркетингу не буває.</div>
+      </div>
+    </div>
+    <div class="sec-cta reveal"><a href="#meet" class="btn btn-ink"><span>Безкоштовний аудит реклами</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></div>
+  </div>
+</section>
+
+<!-- ===== SERVICES (bento) ===== -->
+<section id="services">
+  <div class="container">
+    <span class="kicker reveal">// 05 · Напрями</span>
+    <h2 class="stitle reveal">Що ми підключаємо — <b>разом або окремо</b></h2>
+    <p class="slead reveal">CRM — ядро, решта навколо. Беріть усе або тільки те, що болить зараз.</p>
+    <div class="bento">
+      <div class="scard crm reveal">
+        <div class="hdr"><span class="ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span><h3>CRM-система</h3></div>
+        <p>Всі заявки, угоди і клієнти — в одній системі. Видно кожен крок менеджера без запитів і пояснень. Підбираємо CRM під ваш бізнес, а не продаємо «одну найкращу».</p>
+        <div class="systems">KeyCRM · KeepinCRM · Zoho · та інші</div>
+      </div>
+      <div class="scard tel reveal">
+        <div class="hdr"><span class="ico"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></span><h3>IP-телефонія</h3></div>
+        <p>Кожен дзвінок записується і розшифровується AI. Дзвінки стають даними: видно, з якої реклами прийшов клієнт і що сказав менеджер.</p>
+      </div>
+      <div class="scard ana reveal">
+        <div class="hdr"><span class="ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg></span><h3>Аналітика</h3></div>
+        <p>Нарешті видно, що окупається, а що пожирає бюджет — простим людським поясненням. Від базового за день до серверної, як у лідерів ринку.</p>
+      </div>
+      <div class="scard msg reveal">
+        <div class="hdr"><span class="ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.3 9 9 0 0 1-3.8-.8L3 21l1.9-5a8.4 8.4 0 0 1-.8-3.6 8.4 8.4 0 0 1 8.4-8.4A8.4 8.4 0 0 1 21 11.5Z"/></svg></span><h3>Продажі в переписках</h3></div>
+        <p>Instagram, Telegram, Viber і чат сайту — в CRM. Діалоги зберігаються в компанії, а не на телефоні співробітника. AI відповідає на рутинні питання, поки менеджери продають.</p>
+      </div>
+    </div>
+    <div class="center-cta reveal"><a href="#meet" class="btn btn-blue"><span>Зібрати мою зв'язку — поговорити з інженером</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></div>
+  </div>
+</section>
+
+<!-- ===== DISTRIBUTORS / MANUFACTURERS ===== -->
+<section class="distrib" id="distrib">
+  <div class="container distrib-grid">
+    <div class="distrib-txt">
+      <span class="kicker reveal">// 06 · Дистриб'юторам і виробникам</span>
+      <h2 class="stitle reveal">Склад, клієнти й продажі — <b>в одній сучасній системі</b></h2>
+      <p class="slead reveal">Якщо все досі тримається на старій 1С, Excel чи обліку вручну — переїдемо на сучасну CRM зі складом. Без втрат і без зупинки бізнесу.</p>
+      <ul class="distrib-list reveal">
+        <li><b>Перехід зі застарілих систем.</b> Клієнти, замовлення й залишки переносяться повністю — нічого не губиться.</li>
+        <li><b>Контроль клієнтів і статистика.</b> Видно кожен етап угоди й роботу кожного менеджера.</li>
+        <li><b>Склад у CRM:</b> залишки, відвантаження, кілька точок — у тій самій системі.</li>
+        <li><b>Готова основа під масштаб.</b> Можна нарощувати рекламу, не тонучи в хаосі замовлень.</li>
+      </ul>
+      <a href="#meet" class="btn btn-ink reveal"><span>Обговорити переїзд зі старої системи</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    </div>
+    <div class="migr reveal" aria-hidden="true">
+      <span class="mk">// було → стало</span>
+      <div class="migr-row">
+        <div class="migr-old"><span>Стара 1С</span><span>Excel-таблиці</span><span>Облік вручну</span></div>
+        <div class="migr-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <div class="migr-new"><b>Сучасна CRM зі складом</b><span>клієнти · замовлення · залишки · аналітика — в одному місці</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GUARANTEE ===== -->
+<section class="guarantee" id="audit">
+  <div class="container">
+    <span class="kicker reveal">// 07 · Без ризику</span>
+    <h2 class="stitle reveal">Нічого не зламаємо. <b>І ви нічим не ризикуєте</b></h2>
+    <p class="slead reveal">Найчастіші страхи власника ми знімаємо ще до старту.</p>
+    <div class="guar-grid">
+      <div class="guar reveal"><span class="gi"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg></span><div><h3>Ви володієте всім</h3><p>Налаштовуємо у ваших акаунтах. CRM, дані, доступи — ваші. Жодного «прив'язування» до нас.</p></div></div>
+      <div class="guar reveal"><span class="gi"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><div><h3>Те, що працює — не чіпаємо</h3><p>Підключаємо нове поруч і перемикаємо лише тоді, коли все перевірено. Без простоїв.</p></div></div>
+      <div class="guar reveal"><span class="gi"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span><div><h3>Безкоштовний аудит</h3><p>Перевіримо, чи коректно реклама бачить продажі. Чесно скажемо, що працює, а що ні — навіть якщо нічого не замовите.</p></div></div>
+    </div>
+    <div class="center-cta reveal"><a href="#meet" class="btn btn-ink"><span>Безкоштовний експрес-аудит реклами</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section class="dotgrid" id="process">
+  <div class="container">
+    <span class="kicker reveal">// 08 · Процес</span>
+    <h2 class="stitle reveal">Як це відбувається — <b>без болю і простоїв</b></h2>
+    <p class="slead reveal">Усю технічну роботу беремо на себе, а на кожному кроці пояснюємо, що й навіщо. Ось наш процес.</p>
+    <div class="proc-grid">
+      <div class="proc reveal"><div class="node">1</div><h3>Знайомство</h3><p>Короткий дзвінок на 10–15 хвилин: хто ви, що продаєте, що вже працює. Без презентацій і тиску.</p></div>
+      <div class="proc reveal"><div class="node">2</div><h3>Зустріч з інженером</h3><p>Розбираємо вашу зв'язку: сайт, реклама, дзвінки, переписки. Кажемо чесну ціну. Якщо щось зроблено добре — так і скажемо.</p></div>
+      <div class="proc reveal"><div class="node">3</div><h3>Інтеграція</h3><p>З вас — доступи до сайту. З нас — усе інше. Те, що працює, не чіпаємо. Базовий рівень — від одного дня.</p></div>
+      <div class="proc reveal"><div class="node">4</div><h3>Передача з поясненням</h3><p>Показуємо, як усім користуватись, відповідаємо на питання. Ніяких «ось ваша CRM, розбирайтесь самі».</p></div>
+    </div>
+    <div class="micro reveal">Цінуєте швидкість? <b>Базовий рівень запускаємо за кілька днів — без простоїв у вашій роботі.</b></div>
+    <div class="sec-cta reveal"><a href="#meet" class="btn btn-blue"><span>Хочу заявки в CRM вже завтра</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></div>
+  </div>
+</section>
+
+<!-- ===== PROOF BAND (before price) ===== -->
+<!-- LUSTRA — реальні цифри з ADS-кейсу Tempus (результат реклами; не доказ саме CRM). Текст — лише з джерела. -->
+<section class="proof">
+  <div class="container proof-in">
+    <div class="ptxt reveal">
+      <span class="pk">// Реальний результат клієнта</span>
+      <h3>Магазин освітлення LUSTRA: <b>реклама, що окупається</b></h3>
+      <div class="bignum"><span data-count="100000" data-suffix=" ₴">100 000 ₴</span> → <span data-count="756000" data-suffix=" ₴">756 000 ₴</span></div>
+      <p>Реальний клієнт Tempus. 100 000 ₴ у рекламу — 756 000 ₴ виручки. Реклама приносить стабільний прибуток, а вартість клієнта — вдвічі менша.</p>
+      <div class="badges">
+        <span class="pb">ROAS <span data-count="756" data-suffix="%">756%</span></span>
+        <span class="pb">CAC <span data-count="272" data-suffix=" ₴">272 ₴</span></span>
+      </div>
+    </div>
+    <div class="shot reveal"><img src="ads/img/audit_results-lustra.jpg" alt="LUSTRA.com.ua — магазин освітлення" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+  <div class="container">
+    <span class="kicker reveal">// 09 · Тарифи</span>
+    <h2 class="stitle reveal">База, Розширений, Топ — <b>і чесна ціна</b></h2>
+    <p class="slead reveal">Без прихованих «зателефонуйте нам». Оберіть рівень — або дайте нам порахувати під ваш бізнес.</p>
+    <div class="disc reveal">Ціни попередні — точний розрахунок після першої зустрічі. Підписка на саму CRM-систему оплачується окремо (від ~2 990 ₴/міс залежно від системи).</div>
+    <div class="price-grid">
+      <div class="plan reveal">
+        <div class="pname">База</div>
+        <div class="ptag">«Просто щоб було. Якісно» · від 1 дня</div>
+        <div class="price">9 990 ₴<small>разова інтеграція</small></div>
+        <div class="outcome">Реклама нарешті бачить відправки форм і дзвінки</div>
+        <ul>
+          <li><b>Усі заявки й угоди</b> падають у CRM, базова воронка</li>
+          <li><b>Телефонія:</b> вибір оператора, інтеграція з сайтом</li>
+          <li><b>Правильні події</b> в аналітиці + мітки, які 80% упускають</li>
+          <li><b>Переписки</b> збираються в CRM</li>
+          <li><b>Консультація</b> інженера</li>
+        </ul>
+        <a href="#meet" class="btn btn-ghost btn-block"><span>Хочу заявки в CRM вже завтра</span></a>
+      </div>
+      <div class="plan accent reveal">
+        <div class="pbadge">★ Рекомендуємо</div>
+        <div class="pname">Розширений</div>
+        <div class="ptag">«Для бізнесу з процесами» · кілька днів</div>
+        <div class="price">29 990 ₴<small>разова інтеграція</small></div>
+        <div class="outcome">Видно, з якої реклами прийшов кожен покупець — дзвінком і в переписці</div>
+        <ul>
+          <li class="inh">Все, що в Базі +</li>
+          <li><b>Склад у CRM:</b> залишки, відвантаження, кілька магазинів</li>
+          <li><b>Розширені воронки</b> й автоматизації</li>
+          <li><b>Відстеження дзвінків</b> з маркетинговими даними</li>
+          <li><b>Дані з переписок</b> — видно джерело клієнта</li>
+        </ul>
+        <a href="#meet" class="btn btn-yellow btn-block"><span>Порахувати під мій бізнес</span></a>
+      </div>
+      <div class="plan reveal">
+        <div class="pname">Топ</div>
+        <div class="ptag">«Як у лідерів ринку»</div>
+        <div class="price">99 990 ₴<small>+ ~$30–60/міс на сервіси</small></div>
+        <div class="outcome">Повертає покупців, яких браузери та iOS «ховають»</div>
+        <ul>
+          <li class="inh">Все, що в Розширеному +</li>
+          <li><b>Серверна аналітика:</b> бачить «прихованих» покупців</li>
+          <li><b>Серверний GTM</b> (first-party), BigQuery, дедуплікація</li>
+          <li><b>Consent Mode v2 + Meta CAPI</b> — повні дані легально</li>
+          <li><b>Дані з месенджерів</b> передаються в рекламу</li>
+          <li><b>Індивідуальний план</b> під ваш проєкт</li>
+        </ul>
+        <a href="#meet" class="btn btn-ghost btn-block"><span>Обговорити з інженером</span></a>
+      </div>
+    </div>
+
+    <div class="tradeoff reveal">
+      <div class="to-top">
+        <h3>Оберіть два з трьох</h3>
+        <p class="hint">Закон трикутника: тримати можна максимум 2</p>
+        <div class="mem-opts">
+          <button class="mopt on" data-key="quality" aria-pressed="true"><span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Якісно</button>
+          <button class="mopt on" data-key="fast" aria-pressed="true"><span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Швидко</button>
+          <button class="mopt" data-key="cheap" aria-pressed="false"><span class="box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Недорого</button>
+        </div>
+        <p class="mem-payoff">Ми за замовчуванням тримаємо <b>Якісно + Швидко</b>. Спробуйте додати «Недорого» — щось доведеться вимкнути.</p>
+      </div>
+      <div class="to-down" id="downsell">
+        <div class="to-down-txt">
+          <span class="to-k">// все ж потрібно бюджетно?</span>
+          <p>Чесний мінімум: налаштуємо базові конверсії в тег-менеджері — щоб реклама бачила відправку форм. Скажемо, чого тут бракує. <b>1 990 ₴.</b></p>
+        </div>
+        <a href="#meet" class="btn btn-yellow to-cta"><span>Беру мінімум — 1 990 ₴</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CASES (реальні CRM-проєкти) ===== -->
+<!-- Назви — з дозволу публікувати. ROAS/гроші для DosingTech і MY-IDI — з ADS-кейсів Tempus;
+     інтеграційні роботи — з Projects.txt (реальні задачі). -->
+<section id="cases">
+  <div class="container">
+    <div class="cases-head">
+      <div>
+        <span class="kicker reveal">// 10 · Кейси</span>
+        <h2 class="stitle reveal">Реальні CRM-проєкти: <b>що ми інтегрували</b></h2>
+      </div>
+      <div class="slider-nav reveal">
+        <button id="casePrev" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button id="caseNext" aria-label="Далі"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="cases-track" id="casesTrack">
+      <div class="case">
+        <div class="cthumb ph"><span>DosingTech</span></div>
+        <div class="chead"><span class="cname">DOSINGTECH</span></div>
+        <div class="cniche">Промислове обладнання · B2B</div>
+        <span class="cwlabel">Що інтегрували</span>
+        <ul class="cwork">
+          <li>Google вчиться на статусі «Якісний лід»: CRM → Ads через WebHook + value</li>
+          <li>Кол-трекінг Binotel з атрибуцією дзвінків</li>
+          <li>Захоплення телефону перед вибором месенджера</li>
+        </ul>
+        <span class="cwlabel">Результат</span>
+        <div class="cmetrics">
+          <div class="big">90 000 ₴ → 4 239 000 ₴</div>
+          <div class="cm">ROAS <span class="gv" data-count="4710" data-suffix="%">4710%</span></div>
+          <div class="cm">CAC <span class="gv" data-count="1756" data-suffix=" ₴">1756 ₴</span></div>
+        </div>
+        <a href="#meet" class="ccta">Хочу так само <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="case">
+        <div class="cthumb ph"><span>Spravno</span></div>
+        <div class="chead"><span class="cname">SPRAVNO</span></div>
+        <div class="cniche">Наскрізна система під ключ</div>
+        <span class="cwlabel">Що інтегрували</span>
+        <ul class="cwork">
+          <li>CRM + GA4 + GTM + Binotel + BigQuery + Looker — в одну модель</li>
+          <li>Передача gclid, UTM, ga_client_id, transaction_id у CRM</li>
+          <li>Value-конверсії в Performance Max (KeepinCRM)</li>
+        </ul>
+        <span class="cwlabel">Результат</span>
+        <p class="cresult">Окупність кожного каналу — в одному дашборді Google Ads vs CRM. Реклама оптимізується на реальні продажі, а не на заявки.</p>
+        <a href="#meet" class="ccta">Хочу так само <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="case">
+        <div class="cthumb"><img src="ads/img/audit_results-bigmishki.jpg" alt="Bigmishki" loading="lazy"></div>
+        <div class="chead"><img class="clogo" src="ads/img/bigmishki_logo.png" alt="Bigmishki"></div>
+        <div class="cniche">Інтернет-магазин подарункових боксів</div>
+        <span class="cwlabel">Що інтегрували</span>
+        <ul class="cwork">
+          <li>UTM → CRM: остання релевантна мітка + тег для покинутих кошиків</li>
+          <li>Артикул і атрибути набору в CRM</li>
+          <li>Товарні фіди для Google Merchant Center</li>
+        </ul>
+        <span class="cwlabel">Результат</span>
+        <p class="cresult">Видно реальне джерело кожного замовлення й скільки покупців повертаються з покинутих кошиків.</p>
+        <a href="#meet" class="ccta">Хочу так само <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="case">
+        <div class="cthumb ph"><span>My-Idi</span></div>
+        <div class="chead"><span class="cname">MY-IDI</span></div>
+        <div class="cniche">Бренд доглядової косметики</div>
+        <span class="cwlabel">Що інтегрували</span>
+        <ul class="cwork">
+          <li>UTM + gclid / gbraid / wbraid / hasclid у CRM</li>
+          <li>Синхронізація замовлень і статусів сайт ↔ CRM</li>
+          <li>Звірка атрибуції Meta Ads vs CRM</li>
+        </ul>
+        <span class="cwlabel">Результат</span>
+        <div class="cmetrics">
+          <div class="big">190 000 ₴ → 710 600 ₴</div>
+          <div class="cm">ROAS <span class="gv" data-count="374" data-suffix="%">374%</span></div>
+          <div class="cm">CAC <span class="gv" data-count="270" data-suffix=" ₴">270 ₴</span></div>
+        </div>
+        <a href="#meet" class="ccta">Хочу так само <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT + MEET ===== -->
+<section id="meet">
+  <div class="container">
+    <span class="kicker reveal">// 11 · З ким працюватимете</span>
+    <div class="about">
+      <div class="about-card reveal">
+        <div class="ah"><div class="ava"><img src="ads/img/serg-about.jpg" alt="Сергій Потоцький"></div><div><h2>Сергій Потоцький</h2><span>Власник Tempus Agency · інженер і маркетолог</span></div></div>
+        <ul>
+          <li>Розуміє і бізнес, і технічну частину — від воронок до серверної аналітики</li>
+          <li>Працював над add.ua, shtuki.ua, oiler.ua, bi.ua</li>
+          <li>Понад 120 проєктів різної складності в e-commerce та інших нішах</li>
+          <li>CRM-інтеграції в усіх наших проєктах робила наша команда</li>
+        </ul>
+        <div class="socials"><a href="#">Facebook</a><a href="#">YouTube</a><a href="#">LinkedIn</a></div>
+      </div>
+      <div class="meet-form reveal">
+        <h3>Призначити зустріч</h3>
+        <p>Перший дзвінок — з інженером, не з продавцем. За потреби зробимо безкоштовний експрес-аудит вашої реклами. 10–15 хвилин. Не сподобається — нічого не винні.</p>
+        <form onsubmit="return submitForm(event)">
+          <div class="field"><label for="m-name">Ваше ім'я</label><input id="m-name" type="text" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="m-phone">Телефон</label><input id="m-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required></div>
+          <div class="field"><label for="m-site">Ваш сайт</label><input id="m-site" type="text" name="site" autocomplete="url" inputmode="url"></div>
+          <p class="consent">* Надсилаючи заявку ви даєте згоду на обробку персональних даних</p>
+          <button type="submit" class="btn btn-blue btn-block"><span>Призначити зустріч</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="container">
+    <span class="kicker reveal">// 12 · FAQ</span>
+    <h2 class="stitle reveal">Питання, які ставлять <b>до того, як замовити</b></h2>
+    <div class="faq reveal">
+      <div class="faq-tabs" role="tablist">
+        <button class="faq-tab is-active" role="tab" aria-selected="true" data-tab="0">Загальні</button>
+        <button class="faq-tab" role="tab" aria-selected="false" data-tab="1">Для інтернет-магазинів</button>
+        <button class="faq-tab" role="tab" aria-selected="false" data-tab="2">Для дистриб'юторів і виробників</button>
+        <button class="faq-tab" role="tab" aria-selected="false" data-tab="3">Для відділу продажу</button>
+        <button class="faq-tab" role="tab" aria-selected="false" data-tab="4">Для маркетологів — вашою мовою</button>
+      </div>
+
+      <div class="faq-panel is-active" role="tabpanel" data-panel="0">
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Яка CRM найкраща?</span></button><div class="faq-a"><div><p>Немає однієї найкращої — є та, що підходить саме вам. Залежить від того, що ви продаєте, як продаєте і куди плануєте рости. На першій зустрічі скажемо, яка система підходить і чому — KeyCRM, KeepinCRM, Zoho чи інша.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">У нас уже є CRM. Нам це треба?</span></button><div class="faq-a"><div><p>Можливо — і це добре. Зробимо аудит: чи передаються маркетингові дані, чи нічого не губиться. Доналаштуємо наявну систему або акуратно переїдемо на іншу — з клієнтами, угодами і переписками.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Це дорого?</span></button><div class="faq-a"><div><p>Інтеграція — разова робота: зробили один раз — працює роками. Базовий рівень коштує 9 990 ₴ і робиться від одного дня. Окремо оплачується підписка на CRM — від ~2 990 ₴/міс, залежно від системи.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Ви не зламаєте те, що вже працює?</span></button><div class="faq-a"><div><p>Ні. Спочатку дивимось, що у вас є і як воно працює. Те, що працює, — не чіпаємо: підключаємо нове поруч і перемикаємо тільки тоді, коли все перевірено.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">А якщо ми перестанемо з вами працювати?</span></button><div class="faq-a"><div><p>Усе залишається вашим. Ми налаштовуємо у ваших акаунтах: CRM, аналітика, телефонія, всі доступи — на вас. Жодного «прив'язування» до агенції. Підете — заберете все з собою.</p></div></div></div>
+      </div>
+
+      <div class="faq-panel" role="tabpanel" data-panel="1">
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Як інтеграція впливає на мою Google-рекламу?</span></button><div class="faq-a"><div><p>Безпосередньо. Реклама починає отримувати правильні конверсії й дані про реальних покупців — і AI-алгоритми оптимізуються на тих, хто купує, а не на будь-кого. За точної передачі даних та сама реклама приносить кратно більше — у наших проєктах до 5–10×.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Чи буде в CRM видно мої товари і склад?</span></button><div class="faq-a"><div><p>Товари інтернет-магазину — так, за замовчуванням. Послуги — налаштуємо додатково. Склад (залишки, відвантаження, кілька точок) — окрема послуга, входить у Розширений тариф.</p></div></div></div>
+      </div>
+
+      <div class="faq-panel" role="tabpanel" data-panel="2">
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">У нас стара система (1С, Excel) і склад на кількох точках. Переведете?</span></button><div class="faq-a"><div><p>Так, це одна з типових задач. Переносимо клієнтів, замовлення й залишки на сучасну CRM зі складом, налаштовуємо кілька точок і відвантаження. Робимо поетапно, без зупинки бізнесу — стара система працює, поки нова не перевірена.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Ми ведемо все в Excel або 1С. Це проблема?</span></button><div class="faq-a"><div><p>Дуже поширена ситуація, і ми з нею працюємо постійно. Перенесемо клієнтів, замовлення і склад у сучасну систему — з планом і без паніки. Нічого не загубиться.</p></div></div></div>
+      </div>
+
+      <div class="faq-panel" role="tabpanel" data-panel="3">
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Як контролювати менеджерів і якість продажів?</span></button><div class="faq-a"><div><p>Усі дзвінки записуються й розшифровуються AI, листування зберігається в CRM, кожна угода проходить видимі етапи. Видно, хто що сказав, де загубилась угода і з якої реклами прийшов клієнт — без здогадок і без «менеджер сказав, що дзвонив».</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">У нас мало дзвінків. Телефонія потрібна?</span></button><div class="faq-a"><div><p>Якщо у вас понад 5 продажів на місяць — ви вже щось забуваєте і плутаєте. До того ж дзвінки — це дані, яких реклама зараз не бачить. А якщо продаєте в переписках — замість телефонії підключимо месенджери до CRM.</p></div></div></div>
+      </div>
+
+      <div class="faq-panel" role="tabpanel" data-panel="4">
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Які параметри ви передаєте в CRM і рекламу?</span></button><div class="faq-a"><div><p>Розділяємо за призначенням. <b>У рекламу</b> — конверсії: ловимо gclid, а для iOS-трафіку без ATT-згоди — wbraid/gbraid; офлайн-продажі з CRM матчимо через Enhanced Conversions for Leads (хеш email/телефону). <b>У наскрізну аналітику</b> (GA4/BigQuery) — client_id, session_id, user_id, щоб зв'язати сесії з реальними продажами. Усе через GTM з коректним dataLayer. Те, що 80% упускають, — напр. не передають value конверсії, тож Smart Bidding оптимізує на кількість, а не на гроші.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Серверна аналітика — що саме ви робите?</span></button><div class="faq-a"><div><p>Серверний GTM (Stape або Google Cloud) з віддачею тегів із вашого субдомену (first-party) — щоб ITP не різало термін життя cookie. Enhanced Conversions + офлайн-конверсії з CRM (матч через хеш), дедуплікація подій по transaction_id, зв'язка з BigQuery. Це повертає дані, які Safari/ITP та iOS-ATT обрізають, — і дає алгоритмам повну картину.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">А Consent Mode v2 і згода на кукі — налаштовуєте?</span></button><div class="faq-a"><div><p>Так. Ставимо CMP + Consent Mode v2 (basic або advanced залежно від ситуації). Без нього Google ріже ремаркетинг і моделює конверсії наосліп — особливо критично для трафіку з ЄС. Дані збираються легально й при цьому повно.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">А Meta (Facebook)? Чи тільки Google?</span></button><div class="faq-a"><div><p>Не тільки Google. Для Meta налаштовуємо Conversions API (CAPI) з дедуплікацією подій (Pixel ↔ сервер через event_id) і піднімаємо Event Match Quality. fbclid ловимо й зберігаємо так само, як gclid у Google — щоб обидві системи бачили реальні продажі.</p></div></div></div>
+        <div class="faq-item"><button class="faq-q" aria-expanded="false"><span class="qbox"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span><span class="qt">Ви не заберете в нас проєкт?</span></button><div class="faq-a"><div><p>Ні. Якщо у проєкті є ваша команда — працюємо з нею, а не замість неї. Комерційну пропозицію формуємо від вигід у грошах — щоб ваше керівництво її зрозуміло і затвердило. Допомагаємо з розрахунками.</p></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL / CONTACTS ===== -->
+<section class="final" id="contacts">
+  <div class="container">
+    <span class="kicker reveal">// 13 · Контакти</span>
+    <h2 class="reveal">Хочете, щоб заявки падали в CRM уже завтра?</h2>
+    <p class="reveal">Напишіть нам — <b>з вас тільки доступи до сайту</b>. Підключимо CRM, аналітику й телефонію акуратно: нічого не зламаємо, все пояснимо.</p>
+    <div class="reveal" style="display:flex;justify-content:center"><a href="#meet" class="btn btn-yellow"><span>Запланувати зустріч</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></div>
+    <div class="team-label reveal">Команда Tempus.Agency</div>
+    <div class="team reveal">
+      <img src="ads/img/_MG_1135-1.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-2.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-3.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-4.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-5.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-6.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-7.jpg" alt="" loading="lazy"><img src="ads/img/_MG_1135-8.jpg" alt="" loading="lazy">
+    </div>
+    <div class="contacts-row reveal">
+      <a class="cchip" href="#"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Telegram</a>
+      <a class="cchip" href="#"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.8 7.2L3 21l1.9-5A8.4 8.4 0 1 1 21 11.5Z"/></svg>WhatsApp</a>
+      <a class="cchip" href="tel:+380937725676"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>+38 093 772-56-76</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUICK PICK (яскравий блок над футером) ===== -->
+<section id="quickmsg" class="quickmsg">
+  <div class="container">
+    <span class="kicker reveal">// 14 · Рішення</span>
+    <h2 class="stitle reveal">Оберіть, що болить — <b>покажемо</b>, як це лагодиться</h2>
+    <p class="qm-lead reveal">Один тап — і ми коротко пояснимо, що з цим робити. Захочете більше — напишемо вам у Telegram, Viber чи WhatsApp. Без дзвінків.</p>
+    <div class="qm-card reveal">
+      <span class="qm-chip-l">Що з цього вам найзнайоміше?</span>
+      <div class="qm-chips">
+        <button type="button" class="qm-chip" onclick="qmPick(this)" data-sol="Зведемо Instagram, Telegram, Viber, сайт і дзвінки в одну CRM — жодна заявка не загубиться, навіть уночі.">Гублю заявки — пишуть у різні місця</button>
+        <button type="button" class="qm-chip" onclick="qmPick(this)" data-sol="Підключимо наскрізну аналітику — побачите, яка реклама приносить гроші, а яка просто зливає бюджет.">Не знаю, яка реклама окупається</button>
+        <button type="button" class="qm-chip" onclick="qmPick(this)" data-sol="Наведемо лад: усі клієнти, угоди й історія — в одній системі замість Excel, чатів і блокнотів.">Хаос у клієнтах і замовленнях</button>
+        <button type="button" class="qm-chip" onclick="qmPick(this)" data-sol="Усі дзвінки й переписки фіксуються в CRM з нагадуваннями — менеджери нічого не забувають і дотискають угоди.">Менеджери щось забувають</button>
+        <button type="button" class="qm-chip" onclick="qmPick(this)" data-sol="Беремося й за нетипові задачі. Залиште номер — напишемо, розпитаємо деталі й підберемо рішення саме під вашу ситуацію.">Інше</button>
+      </div>
+      <div class="qm-result" id="qmResult" hidden>
+        <div class="qm-sol"><span class="qm-sol-ic" aria-hidden="true">✓</span><p id="qmSol"></p></div>
+        <form onsubmit="return submitForm(event)">
+          <input type="hidden" name="problem" id="qmProblem">
+          <div class="qm-inline">
+            <input id="qm-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="Ваш номер телефону" required>
+            <button type="submit" class="btn btn-blue"><span>Напишіть мені</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+          <p class="qm-note">Напишемо вам у месенджер — зазвичай за кілька хвилин · 9:00–20:00</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <img src="ads/img/logo-white.svg" alt="Tempus Agency">
+        <p>Підключаємо CRM, аналітику та IP-телефонію до інтернет-магазинів. Реклама бачить реальних покупців.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Austria</h4><p>Neubaugasse 24, 8020 Graz</p><a href="tel:+4368110497546">+43 681 104 975 46</a>
+        <h4 style="margin-top:18px">Україна</h4><p>Київ, просп. В. Лобановського 150</p><a href="tel:+380937725676">+38 093 772-56-76</a>
+      </div>
+      <div class="foot-col">
+        <h4>Месенджери</h4>
+        <a href="#">Telegram</a><a href="#">WhatsApp</a><a href="#">Viber</a><a href="#">Messenger</a><a href="#">Email</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Tempus Agency. Усі права захищені.</span>
+      <span><a href="#">Налаштування кукі</a> · <a href="#">Політика конфіденційності</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-cta">
+  <a href="#meet" class="btn btn-blue"><span>Зустріч</span></a>
+  <a href="#meet" class="btn btn-ghost"><span>Аудит</span></a>
+</div>
+
+<div class="float-btns">
+  <a class="fcall" href="tel:+380937725676" aria-label="Подзвонити"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></a>
+  <button class="tg" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+  <button class="wa" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.8 7.2L3 21l1.9-5A8.4 8.4 0 1 1 21 11.5Z"/></svg></button>
+  <button onclick="openPopup('callbackPopup')" aria-label="Замовити дзвінок"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.7.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg></button>
+</div>
+
+<div class="overlay" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="cbTitle">
+  <div class="popup">
+    <button class="close" onclick="closePopup('callbackPopup')" aria-label="Закрити"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="pm-face"><img src="ads/img/popup_manager.jpg" alt="Сергій"><span class="pmn">// Менеджер Сергій</span></div>
+    <h3 id="cbTitle">Передзвонимо вам</h3>
+    <form onsubmit="return submitForm(event)">
+      <div class="pstep active" data-step="1">
+        <p class="pm">Залиште номер — передзвонимо за кілька хвилин.</p>
+        <div class="field"><label for="cb-phone">Телефон</label><input id="cb-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required></div>
+        <button type="button" class="btn btn-blue btn-block" onclick="cbNext()"><span>Далі</span></button>
+        <div class="or-div">або</div>
+        <a class="tel-direct" href="tel:+380937725676">Подзвонити самому: +38 093 772-56-76</a>
+      </div>
+      <div class="pstep" data-step="2">
+        <p class="pm">Де вам зручніше? Оберіть месенджер.</p>
+        <div class="msgr-pick">
+          <button type="button" onclick="pickMsgr(this)">Telegram</button>
+          <button type="button" onclick="pickMsgr(this)">WhatsApp</button>
+        </div>
+        <button type="submit" class="btn btn-blue btn-block"><span>Передзвоніть мені</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="pricePopup" role="dialog" aria-modal="true" aria-labelledby="ppTitle">
+  <div class="popup">
+    <button class="close" onclick="closePopup('pricePopup')" aria-label="Закрити"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="pm-face"><img src="ads/img/popup_manager.jpg" alt="Alex"><span class="pmn">// Менеджер Alex</span></div>
+    <h3 id="ppTitle">Заберіть прайс-лист</h3>
+    <p class="pm">Залиште телефон — надішлемо файл з усіма цінами на інтеграцію. Без спаму, тільки прайс.</p>
+    <form onsubmit="return submitForm(event)">
+      <div class="field"><label for="pp-phone">Телефон</label><input id="pp-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" required></div>
+      <button type="submit" class="btn btn-yellow btn-block"><span>Отримати прайс-лист</span><span class="chip" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    </form>
+  </div>
+</div>
+
+<script>
+/* mobile menu */
+const burger=document.getElementById('burger'),mm=document.getElementById('mobileMenu');
+burger.addEventListener('click',()=>{const o=mm.classList.toggle('show');burger.setAttribute('aria-expanded',o?'true':'false');});
+mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mm.classList.remove('show');burger.setAttribute('aria-expanded','false');}));
+
+/* dropdown keyboard */
+const ddBtn=document.getElementById('napryamy');
+if(ddBtn){const dd=ddBtn.closest('.dropdown');
+  ddBtn.addEventListener('click',()=>ddBtn.setAttribute('aria-expanded',ddBtn.getAttribute('aria-expanded')==='true'?'false':'true'));
+  dd.addEventListener('focusout',e=>{if(!dd.contains(e.relatedTarget))ddBtn.setAttribute('aria-expanded','false');});}
+
+/* hero word-justify H1 */
+(function(){const h=document.getElementById('heroTitle');if(!h)return;
+  h.innerHTML=h.textContent.trim().split(/\s+/).map(w=>'<span>'+w+'</span>').join(' ');
+})();
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
+  const item=q.closest('.faq-item'),o=item.classList.toggle('open');q.setAttribute('aria-expanded',o?'true':'false');
+}));
+/* FAQ tabs */
+document.querySelectorAll('.faq-tab').forEach(tab=>tab.addEventListener('click',()=>{
+  const i=tab.dataset.tab;
+  document.querySelectorAll('.faq-tab').forEach(t=>{const on=t.dataset.tab===i;t.classList.toggle('is-active',on);t.setAttribute('aria-selected',on?'true':'false');});
+  document.querySelectorAll('.faq-panel').forEach(p=>p.classList.toggle('is-active',p.dataset.panel===i));
+}));
+
+/* mem toggle */
+const memOrder=['quality','fast'];
+function syncDownsell(){const c=document.querySelector('.mopt[data-key="cheap"]'),d=document.getElementById('downsell');if(c&&d)d.classList.toggle('cheap-on',c.classList.contains('on'));}
+document.querySelectorAll('.mopt').forEach(opt=>opt.addEventListener('click',()=>{
+  const k=opt.dataset.key;
+  if(opt.classList.contains('on')){opt.classList.remove('on');opt.setAttribute('aria-pressed','false');memOrder.splice(memOrder.indexOf(k),1);syncDownsell();return;}
+  opt.classList.add('on');opt.setAttribute('aria-pressed','true');memOrder.push(k);
+  if(memOrder.length>2){const old=memOrder.shift();const el=document.querySelector('.mopt[data-key="'+old+'"]');el.classList.remove('on');el.setAttribute('aria-pressed','false');}
+  syncDownsell();
+}));
+
+/* cases slider */
+(function(){const tr=document.getElementById('casesTrack');if(!tr)return;
+  const step=()=>Math.min(tr.clientWidth*.85,460);
+  const p=document.getElementById('casePrev'),n=document.getElementById('caseNext');
+  if(p)p.addEventListener('click',()=>tr.scrollBy({left:-step(),behavior:'smooth'}));
+  if(n)n.addEventListener('click',()=>tr.scrollBy({left:step(),behavior:'smooth'}));
+})();
+
+/* popups */
+let lastFocus=null;
+function openPopup(id){const o=document.getElementById(id);lastFocus=document.activeElement;o.classList.add('show');
+  if(id==='callbackPopup'){o.querySelectorAll('.pstep').forEach(s=>s.classList.toggle('active',s.dataset.step==='1'));}
+  const f=o.querySelector('input,button');if(f)f.focus();}
+function closePopup(id){const o=document.getElementById(id);o.classList.remove('show');if(lastFocus)lastFocus.focus();}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closePopup(o.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.show').forEach(o=>closePopup(o.id));});
+function pickMsgr(b){b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');}
+function cbNext(){const p=document.getElementById('callbackPopup');p.querySelector('.pstep[data-step="1"]').classList.remove('active');const s2=p.querySelector('.pstep[data-step="2"]');s2.classList.add('active');const b=s2.querySelector('button');if(b)b.focus();}
+
+/* scroll progress */
+const pbar=document.getElementById('progress');
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-innerHeight;pbar.style.width=(h>0?Math.min(scrollY/h*100,100):0)+'%';},{passive:true});
+
+/* count-up */
+function countUp(el){const target=parseFloat(el.dataset.count);if(isNaN(target))return;
+  const pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',dur=900,t0=performance.now();
+  function tick(now){const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=pre+Math.round(target*e).toLocaleString('uk-UA')+suf;if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);}
+if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){countUp(e.target);cio.unobserve(e.target);}}),{threshold:.4});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+}
+
+/* exit-intent / scroll-depth price popup (once per session) */
+function maybePricePopup(){if(sessionStorage.getItem('tempus_pp'))return;
+  if(document.querySelector('.overlay.show'))return;
+  sessionStorage.setItem('tempus_pp','1');openPopup('pricePopup');}
+document.addEventListener('mouseout',e=>{if(e.clientY<=0&&!e.relatedTarget)maybePricePopup();});
+setTimeout(()=>{const onScroll=()=>{const h=document.documentElement.scrollHeight-innerHeight;if(h>0&&scrollY/h>0.55){maybePricePopup();window.removeEventListener('scroll',onScroll);}};window.addEventListener('scroll',onScroll,{passive:true});},9000);
+
+/* reveal */
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if('IntersectionObserver' in window && !reduce){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+
+/* UTM + gclid capture */
+(function(){const p=new URLSearchParams(location.search);const keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','wbraid','gbraid'];const data={};
+  keys.forEach(k=>{if(p.get(k))data[k]=p.get(k);});
+  try{const s=JSON.parse(sessionStorage.getItem('tempus_attr')||'{}');Object.assign(data,s);sessionStorage.setItem('tempus_attr',JSON.stringify(data));}catch(e){}
+  document.querySelectorAll('form').forEach(f=>keys.forEach(k=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=data[k]||'';f.appendChild(i);}));
+})();
+
+/* form stub */
+function submitForm(e){e.preventDefault();const f=e.target,btn=f.querySelector('button[type=submit]'),sp=btn.querySelector('span');
+  if(sp)sp.textContent='Відправляємо…';btn.disabled=true;
+  setTimeout(()=>{if(sp)sp.textContent='✓ Дякуємо! Ми зв\'яжемося';},700);
+  console.log('FORM:',Object.fromEntries(new FormData(f)));return false;}
+
+/* quick pick → рішення + контакт */
+function qmPick(b){
+  document.querySelectorAll('.qm-chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
+  document.getElementById('qmSol').textContent=b.dataset.sol||'';
+  document.getElementById('qmProblem').value=b.textContent.trim();
+  const r=document.getElementById('qmResult');r.hidden=false;
+  const ph=document.getElementById('qm-phone');if(ph)ph.focus({preventScroll:true});}
+</script>
+</body>
+</html>
