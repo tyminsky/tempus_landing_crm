@@ -1,0 +1,176 @@
+.contact_popup__close_btn:before {
+  width: 20px;
+  height: 20px;
+}
+
+.contact_popup__close_btn {
+  right: 55px;
+  bottom: 55px;
+  width: 75px;
+  height: 75px;
+}
+
+.contact_popup__manager-thumb {
+  font-size: 15px;
+}
+
+.contact_popup__manager-thumb:before {
+  top: 48px;
+  width: 18px;
+  height: 18px;
+}
+
+.contact_popup__manager-thumb img {
+  width: 66px;
+  height: 66px;
+  margin-bottom: 9px;
+}
+
+.contact_popup__manager-message {
+  font-size: 19px;
+  padding: 18px 30px 18px 45px;
+}
+
+.contact_popup__form-step {
+  padding: 31px;
+}
+
+.contact_popup__form-step--2 {
+  padding-bottom: 16px;
+}
+
+.contact_popup__form-input input {
+  font-size: 24px;
+  height: 74px;
+}
+
+.contact_popup__form-messengers {
+  gap: 12px;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.contact_popup__form-messenger:before {
+  -webkit-clip-path: polygon(0 0,calc(100% - 93px) 0,calc(100% - 85px) 7px,100% 7px,100% calc(100% - 19px),calc(100% - 12px) calc(100% - 7px),calc(100% - 85px) calc(100% - 7px),calc(100% - 93px) 100%,0 100%,0 calc(50% + 16px),6px calc(50% + 10px),6px calc(50% - 10px),0 calc(50% - 16px));
+  clip-path: polygon(0 0,calc(100% - 93px) 0,calc(100% - 85px) 7px,100% 7px,100% calc(100% - 19px),calc(100% - 12px) calc(100% - 7px),calc(100% - 85px) calc(100% - 7px),calc(100% - 93px) 100%,0 100%,0 calc(50% + 16px),6px calc(50% + 10px),6px calc(50% - 10px),0 calc(50% - 16px));
+}
+
+.contact_popup__form-messenger {
+  font-size: 21px;
+  height: 96px;
+  padding: 12px 12px 12px 18px;
+}
+
+.contact_popup__form-messenger .messenger_ico {
+  width: 60px;
+  height: 60px;
+  -webkit-clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+
+.contact_popup__form-messenger .messenger_ico img {
+  width: 27px;
+  height: 27px;
+}
+
+.contact_popup__form-messenger--reverse {
+  padding: 12px 18px 12px 12px;
+}
+
+.contact_popup__form-messenger--reverse .messenger_ico {
+  -webkit-clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+  clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+
+.home_intro__title {
+  font-size: 23px;
+}
+
+.home_intro__cusor-video {
+  width: 430px;
+  height: 430px;
+  margin: -215px 0 0 -215px;
+}
+
+.intro:before {
+  top: -130px;
+}
+
+.audit_categories__itm-title {
+  font-size: 20px;
+}
+
+.audit_categories--ads .audit_categories__itm-title {
+  font-size: 15px;
+}
+
+.audit_receive__content {
+  gap: 0 4.776119403%;
+}
+
+.audit_receive--ads .audit_receive__form {
+  padding: 50px 56px 50px 54px;
+}
+
+.audit_receive--ads .audit_receive__form-title {
+  font-size: 24px;
+}
+
+.audit_receive__form-title {
+  font-size: 24px;
+}
+
+.ads_hero__title {
+  font-size: 68px;
+}
+
+html[lang=ru-RU] .ads_hero__title {
+  font-size: 68px;
+}
+
+.ads_hero__subtitle {
+  font-size: 30px;
+}
+
+html[lang=ru-RU] .ads_hero__subtitle {
+  font-size: 30px;
+}
+
+.ecom_hero__manager-ava {
+  width: 75px;
+}
+
+.ecom_slider__mob_decor {
+  left: 62px;
+  right: 62px;
+}
+
+.ecom_slider__mob_decor.top {
+  top: 30px;
+}
+
+.ecom_slider__mob_decor.bot {
+  bottom: 30px;
+}
+
+.ecom_slider__decor.top {
+  top: 93px;
+}
+
+.ecom_slider__decor.bot {
+  bottom: 93px;
+}
+
+.ecom_slider__frame-left,
+.ecom_slider__frame-right {
+  top: 30px;
+  bottom: 30px;
+}
+
+.ecom_slider__frame-left {
+  left: 30px;
+}
+
+.ecom_slider__frame-right {
+  right: 30px;
+}

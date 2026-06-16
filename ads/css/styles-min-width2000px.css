@@ -1,0 +1,121 @@
+.oxy-modal-backdrop,
+.popup__overlay {
+  background-size: 800px auto;
+}
+
+.popup__close_btn {
+  width: 96px;
+  height: 96px;
+  top: -96px;
+  right: -96px;
+  background-size: 48px;
+}
+
+.popup__content {
+  max-width: 680px;
+  padding: 76px 30px 60px 50px;
+}
+
+.popup__title {
+  font-size: 40px;
+}
+
+.popup__manager {
+  margin-top: 38px;
+}
+
+.popup__manager-thumb {
+  width: 88px;
+}
+
+.popup__manager-thumb:before {
+  top: 64px;
+  width: 24px;
+  height: 24px;
+}
+
+.popup__manager-img {
+  width: 88px;
+  height: 88px;
+}
+
+.popup__manager-name {
+  font-size: 20px;
+  margin-top: 12px;
+}
+
+.popup__manager-message {
+  font-size: 24px;
+  padding: 24px 24px 24px 52px;
+  -webkit-clip-path: polygon(0 0,100% 0,100% 100%,32px 100%,20px calc(100% - 6px*2),20px 24px,0 0);
+  clip-path: polygon(0 0,100% 0,100% 100%,32px 100%,20px calc(100% - 6px*2),20px 24px,0 0);
+}
+
+.popup__form {
+  margin: 32px 24px 0;
+}
+
+.popup__form-field+.popup__form-field {
+  margin-top: 32px;
+}
+
+.popup__form-field input {
+  font-size: 24px;
+  height: 78px;
+}
+
+.popup__form-concent {
+  font-size: 20px;
+  margin-top: 36px;
+}
+
+.popup__form-submit {
+  margin-top: 46px;
+  font-size: 28px;
+}
+
+.popup__form-submit .submit_arrow {
+  width: 72px;
+  height: 72px;
+  margin: 10px 34px 10px 10px;
+  background-size: 22px 18px;
+}
+
+.popup__form-submit .submit_arrow:before {
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+}
+
+@-webkit-keyframes submit_arrow_circle {
+  0%, 100% {
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+  }
+
+  66% {
+    top: -16px;
+    left: -16px;
+    right: -16px;
+    bottom: -16px;
+  }
+}
+
+@keyframes submit_arrow_circle {
+  0%, 100% {
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+  }
+
+  66% {
+    top: -16px;
+    left: -16px;
+    right: -16px;
+    bottom: -16px;
+  }
+}

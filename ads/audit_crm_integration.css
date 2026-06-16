@@ -1,0 +1,1183 @@
+/* ============================================================
+   audit_crm_integration.css
+   Стилі сторінки crm-integration.html (редизайн v2).
+   Правило ізоляції (SEO_ADS_BUILD_GUIDELINES.md):
+   усі селектори — лише під класом-обгорткою .audit_crm_integration.
+   Базові стилі seo-ads.html не перевизначаються.
+
+   Концепція редизайну: зберегти шрифти (DrukWideCyWeb + SF Pro),
+   ритм відступів і впізнаваний «інженерний» почерк (тонкі рамки,
+   зрізані кути, акцент #2572f2, чорні контрастні блоки), але дати
+   КОЖНІЙ секції власний layout замість однакових грід-карток:
+     • crm_pains    — чат-стрічка (зигзаг)
+     • crm_data     — наратив «3 проблеми → 1 рішення»
+     • crm_services — bento з featured-плиткою
+     • crm_steps    — таймлайн зі з'єднувальною лінією
+     • crm_tariffs  — асиметричний pricing з виступаючим центром
+   ============================================================ */
+
+.audit_crm_integration {
+  /* --- базова палітра --- */
+  --crm-accent: #2572f2;
+  --crm-black: #000;
+  --crm-white: #fff;
+  --crm-text: #424242;
+  --crm-border-light: #e5e5e5;
+  --crm-danger: #e02b2b;
+  --crm-gap: 16px;
+
+  /* --- глибина / hairlines --- */
+  --crm-hair: rgba(0, 0, 0, 0.10);
+  --crm-hair-strong: rgba(0, 0, 0, 0.20);
+  --crm-ink-60: rgba(0, 0, 0, 0.55);
+  --crm-accent-08: rgba(37, 114, 242, 0.08);
+  --crm-accent-14: rgba(37, 114, 242, 0.16);
+  --crm-paper: #fafafa;
+
+  /* --- тіні (дозовано) --- */
+  --crm-shadow-hard: 5px 5px 0 0 var(--crm-black);
+  --crm-shadow-soft: 0 20px 40px -26px rgba(0, 0, 0, 0.4);
+
+  /* --- motion --- */
+  --crm-e-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --crm-e-snappy: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --crm-t-fast: 150ms;
+  --crm-t-base: 220ms;
+  --crm-t-slow: 300ms;
+
+  /* --- моноширинні цифри/мітки (системний моно) --- */
+  --crm-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+
+  /* --- шкала зрізів кутів --- */
+  --cut-xs: 6px;
+  --cut-sm: 10px;
+  --cut-md: 18px;
+}
+
+/* ---------- Спільне: секції ---------- */
+
+.audit_crm_integration .crm_pains,
+.audit_crm_integration .crm_data,
+.audit_crm_integration .crm_services,
+.audit_crm_integration .crm_steps,
+.audit_crm_integration .crm_tariffs,
+.audit_crm_integration .crm_faq {
+  position: relative;
+  padding: 50px 0;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_pains,
+  .audit_crm_integration .crm_data,
+  .audit_crm_integration .crm_services,
+  .audit_crm_integration .crm_steps,
+  .audit_crm_integration .crm_tariffs,
+  .audit_crm_integration .crm_faq {
+    padding: 90px 0;
+  }
+}
+
+/* Тонкий фоновий патерн «креслярського паперу» — дуже делікатно,
+   на парних секціях, щоб дати ритм і глибину. */
+.audit_crm_integration .crm_data::before,
+.audit_crm_integration .crm_steps::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(var(--crm-hair) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 80px, #000 calc(100% - 80px), transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 80px, #000 calc(100% - 80px), transparent);
+  opacity: 0.7;
+}
+.audit_crm_integration .crm_data > .container,
+.audit_crm_integration .crm_steps > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Kicker-мітка над заголовком секції ----------
+   Зберігаємо базову верхню лінію (.audit__section_header:before),
+   а мітку додаємо як ::after з order:-1 у flex-колонці. */
+
+.audit_crm_integration .audit__section_header[data-kicker] {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+.audit_crm_integration .audit__section_header[data-kicker]::after {
+  -webkit-order: -1;
+  order: -1;
+  content: attr(data-kicker);
+  margin-bottom: 14px;
+  padding: 5px 11px;
+  font-family: var(--crm-mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--crm-accent);
+  background: var(--crm-accent-08);
+  border: 1px solid var(--crm-accent-14);
+  -webkit-clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+}
+
+/* ============================================================
+   СЕКЦІЯ 2 — crm_pains: чат-стрічка (зигзаг)
+   ============================================================ */
+
+.audit_crm_integration .crm_pains__list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 14px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.audit_crm_integration .crm_pains__itm {
+  position: relative;
+  max-width: 90%;
+  padding: 22px 22px 22px 28px;
+  background: #131313;
+  color: var(--crm-white);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_pains__itm::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 28px;
+  width: 24px;
+  height: 2px;
+  background: var(--crm-accent);
+  transition: width var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_pains__itm:hover {
+  -webkit-transform: translateY(-2px);
+  transform: translateY(-2px);
+}
+.audit_crm_integration .crm_pains__itm:hover::before {
+  width: 44px;
+}
+
+@media (min-width: 768px) {
+  .audit_crm_integration .crm_pains__itm {
+    max-width: 74%;
+  }
+  /* зигзаг: парні — праворуч, з дзеркальним зрізом */
+  .audit_crm_integration .crm_pains__itm:nth-child(even) {
+    margin-left: auto;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  }
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_pains__itm {
+    max-width: 560px;
+  }
+}
+
+.audit_crm_integration .crm_pains__outro {
+  position: relative;
+  max-width: 700px;
+  margin: 32px auto 0;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--crm-text);
+}
+.audit_crm_integration .crm_pains__outro::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  background: var(--crm-accent);
+}
+
+/* ============================================================
+   СЕКЦІЯ 3 — crm_data: наратив «3 проблеми → 1 рішення»
+   ============================================================ */
+
+.audit_crm_integration .crm_data__flow {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: var(--crm-gap);
+  margin-top: 30px;
+}
+
+.audit_crm_integration .crm_data__problems {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--crm-gap);
+}
+@media (min-width: 768px) {
+  .audit_crm_integration .crm_data__problems {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_data__problems {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Проблемні картки — «тихі», білі, з кутовим bracket */
+.audit_crm_integration .crm_data__itm {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 22px;
+  background: var(--crm-white);
+  border: 1px solid var(--crm-hair-strong);
+  box-shadow: var(--crm-shadow-hard);
+  overflow: hidden;
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out), box-shadow var(--crm-t-base) var(--crm-e-out), border-color var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_data__itm::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: var(--cut-md);
+  height: var(--cut-md);
+  background: var(--crm-paper);
+  border-bottom: 1px solid var(--crm-hair-strong);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* кутовий bracket (L) у верхньому лівому куті */
+.audit_crm_integration .crm_data__problems .crm_data__itm::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--crm-black);
+  border-left: 2px solid var(--crm-black);
+  pointer-events: none;
+  z-index: 2;
+  transition: width var(--crm-t-base) var(--crm-e-out), height var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_data__problems .crm_data__itm:hover {
+  -webkit-transform: translate(-2px, -2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 0 var(--crm-accent);
+  border-color: var(--crm-black);
+}
+.audit_crm_integration .crm_data__problems .crm_data__itm:hover::before {
+  width: 22px;
+  height: 22px;
+}
+
+.audit_crm_integration .crm_data__itm-num {
+  font-family: var(--crm-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--crm-ink-60);
+}
+.audit_crm_integration .crm_data__itm-num::before {
+  content: 'NO.';
+  margin-right: 6px;
+  color: var(--crm-accent);
+}
+
+.audit_crm_integration .crm_data__itm-title {
+  position: relative;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--crm-hair);
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+.audit_crm_integration .crm_data__itm-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 28px;
+  height: 2px;
+  background: var(--crm-accent);
+  transition: width var(--crm-t-slow) var(--crm-e-out);
+}
+.audit_crm_integration .crm_data__problems .crm_data__itm:hover .crm_data__itm-title::after {
+  width: 100%;
+}
+
+.audit_crm_integration .crm_data__itm-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--crm-text);
+}
+
+/* Картка-рішення — широка, чорна, гучна */
+.audit_crm_integration .crm_data__solution {
+  background: var(--crm-black);
+  color: var(--crm-white);
+  border-color: var(--crm-black);
+  padding: 30px 26px;
+  gap: 18px;
+}
+.audit_crm_integration .crm_data__solution::after {
+  background: var(--crm-paper);
+}
+.audit_crm_integration .crm_data__solution-head {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 10px;
+}
+.audit_crm_integration .crm_data__solution .crm_data__itm-num {
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--crm-accent);
+}
+.audit_crm_integration .crm_data__solution .crm_data__itm-num::before {
+  content: none;
+}
+.audit_crm_integration .crm_data__solution .crm_data__itm-title {
+  color: var(--crm-white);
+  border-bottom: none;
+  font-size: 20px;
+  padding-bottom: 0;
+}
+.audit_crm_integration .crm_data__solution .crm_data__itm-title::after {
+  display: none;
+}
+.audit_crm_integration .crm_data__solution .crm_data__itm-text {
+  color: var(--crm-white);
+  opacity: 0.85;
+  font-size: 15px;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_data__solution {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    -webkit-align-items: center;
+    align-items: center;
+    column-gap: 36px;
+    padding: 36px 34px;
+  }
+}
+
+/* Панч — чорна стрічка одразу під рішенням */
+.audit_crm_integration .crm_data__punch {
+  max-width: 760px;
+  margin-top: 4px;
+  padding: 18px 24px;
+  background: var(--crm-black);
+  color: var(--crm-white);
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 600;
+  -webkit-clip-path: polygon(0 0, calc(100% - var(--cut-md)) 0, 100% var(--cut-md), 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - var(--cut-md)) 0, 100% var(--cut-md), 100% 100%, 0 100%);
+}
+
+/* ============================================================
+   СЕКЦІЯ 4 — crm_services: bento з featured-плиткою
+   ============================================================ */
+
+.audit_crm_integration .crm_services__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--crm-gap);
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  .audit_crm_integration .crm_services__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .audit_crm_integration .crm_services__itm--featured,
+  .audit_crm_integration .crm_services__itm--wide {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_services__grid {
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 1fr;
+  }
+  .audit_crm_integration .crm_services__itm--featured {
+    grid-column: 1 / 8;
+    grid-row: 1 / 3;
+  }
+  .audit_crm_integration .crm_services__itm:nth-child(2) {
+    grid-column: 8 / 13;
+    grid-row: 1 / 2;
+  }
+  .audit_crm_integration .crm_services__itm:nth-child(3) {
+    grid-column: 8 / 13;
+    grid-row: 2 / 3;
+  }
+  .audit_crm_integration .crm_services__itm--wide {
+    grid-column: 1 / 13;
+    grid-row: 3 / 4;
+  }
+}
+
+.audit_crm_integration .crm_services__itm {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  background: var(--crm-white);
+  border: 1px solid var(--crm-hair-strong);
+  box-shadow: var(--crm-shadow-hard);
+  overflow: hidden;
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out), box-shadow var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_services__itm::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: var(--cut-md);
+  height: var(--cut-md);
+  background: var(--crm-paper);
+  border-bottom: 1px solid var(--crm-hair-strong);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.audit_crm_integration .crm_services__itm:hover {
+  -webkit-transform: translate(-3px, -3px);
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 0 var(--crm-accent);
+}
+
+.audit_crm_integration .crm_services__itm-title {
+  margin: 0;
+  padding: 22px 24px;
+  background: var(--crm-black);
+  color: var(--crm-white);
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_services__itm-title {
+    font-size: 18px;
+  }
+}
+.audit_crm_integration .crm_services__itm-title::after {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 3px;
+  margin-top: 12px;
+  background: var(--crm-accent);
+  transition: width var(--crm-t-slow) var(--crm-e-out);
+}
+.audit_crm_integration .crm_services__itm:hover .crm_services__itm-title::after {
+  width: 72px;
+}
+
+.audit_crm_integration .crm_services__itm-text {
+  padding: 20px 24px 24px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--crm-text);
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+}
+
+/* featured CRM — більший заголовок і теги-чіпи */
+.audit_crm_integration .crm_services__itm--featured .crm_services__itm-title {
+  font-size: 20px;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_services__itm--featured .crm_services__itm-title {
+    font-size: 26px;
+  }
+}
+.audit_crm_integration .crm_services__itm--featured .crm_services__itm-text {
+  font-size: 15px;
+  -webkit-flex-grow: 0;
+  flex-grow: 0;
+}
+.audit_crm_integration .crm_services__itm-tags {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding: 0 24px 24px;
+}
+.audit_crm_integration .crm_services__itm-tag {
+  font-family: var(--crm-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 7px 11px;
+  border: 1px solid var(--crm-hair-strong);
+  color: var(--crm-text);
+  -webkit-clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+}
+
+/* wide «Переписки» — горизонтальний layout на десктопі */
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_services__itm--wide {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+  .audit_crm_integration .crm_services__itm--wide .crm_services__itm-title {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
+  .audit_crm_integration .crm_services__itm--wide .crm_services__itm-text {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+  }
+}
+
+.audit_crm_integration .crm_services__cta {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* ============================================================
+   СЕКЦІЯ 5 — crm_steps: таймлайн зі з'єднувальною лінією
+   ============================================================ */
+
+.audit_crm_integration .crm_steps__list {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  margin-top: 30px;
+}
+/* вертикальна лінія (мобільний) */
+.audit_crm_integration .crm_steps__list::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  bottom: 34px;
+  width: 2px;
+  background: var(--crm-hair-strong);
+}
+
+.audit_crm_integration .crm_steps__itm {
+  position: relative;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  column-gap: 16px;
+  row-gap: 8px;
+  padding: 0 0 28px;
+  background: transparent;
+  border: none;
+}
+.audit_crm_integration .crm_steps__itm:last-child {
+  padding-bottom: 0;
+}
+
+.audit_crm_integration .crm_steps__itm-num {
+  position: relative;
+  z-index: 1;
+  -webkit-grid-row: 1;
+  grid-row: 1;
+  grid-column: 1;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--crm-black);
+  color: var(--crm-white);
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 15px;
+  -webkit-clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.audit_crm_integration .crm_steps__itm--final .crm_steps__itm-num {
+  background: var(--crm-accent);
+}
+
+.audit_crm_integration .crm_steps__itm-title {
+  grid-row: 1;
+  grid-column: 2;
+  -webkit-align-self: center;
+  align-self: center;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+.audit_crm_integration .crm_steps__itm-text {
+  grid-row: 2;
+  grid-column: 2;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--crm-text);
+}
+
+/* горизонтальний таймлайн (десктоп) */
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_steps__list {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+  }
+  .audit_crm_integration .crm_steps__list::before {
+    left: 12.5%;
+    right: 12.5%;
+    top: 18px;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+  }
+  .audit_crm_integration .crm_steps__itm {
+    -webkit-flex: 1;
+    flex: 1;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 14px;
+    padding: 0 18px;
+    text-align: center;
+  }
+  .audit_crm_integration .crm_steps__itm-title,
+  .audit_crm_integration .crm_steps__itm-text {
+    -webkit-align-self: auto;
+    align-self: auto;
+  }
+}
+
+.audit_crm_integration .crm_steps__fast {
+  max-width: 760px;
+  margin-top: 32px;
+  padding: 18px 24px;
+  background: var(--crm-accent);
+  color: var(--crm-white);
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 600;
+  -webkit-clip-path: polygon(0 0, calc(100% - var(--cut-md)) 0, 100% var(--cut-md), 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - var(--cut-md)) 0, 100% var(--cut-md), 100% 100%, 0 100%);
+}
+
+/* ============================================================
+   СЕКЦІЯ 6 — crm_tariffs: асиметричний pricing
+   ============================================================ */
+
+.audit_crm_integration .crm_tariffs__note {
+  max-width: 640px;
+  margin: 16px 0 32px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--crm-text);
+}
+
+.audit_crm_integration .crm_tariffs__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--crm-gap);
+}
+/* мобільний: рекомендований тариф першим */
+.audit_crm_integration .crm_tariffs__itm--accent {
+  -webkit-order: -1;
+  order: -1;
+}
+@media (min-width: 768px) {
+  .audit_crm_integration .crm_tariffs__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .audit_crm_integration .crm_tariffs__itm--accent {
+    -webkit-order: 0;
+    order: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_tariffs__list {
+    grid-template-columns: 1fr 1.12fr 1fr;
+    -webkit-align-items: center;
+    align-items: center;
+  }
+}
+
+.audit_crm_integration .crm_tariffs__itm {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 24px;
+  background: var(--crm-white);
+  border: 1px solid var(--crm-hair-strong);
+  box-shadow: var(--crm-shadow-hard);
+  overflow: hidden;
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out), box-shadow var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_tariffs__itm::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: var(--cut-md);
+  height: var(--cut-md);
+  background: var(--crm-paper);
+  border-bottom: 1px solid var(--crm-hair-strong);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.audit_crm_integration .crm_tariffs__itm:hover {
+  -webkit-transform: translateY(-4px);
+  transform: translateY(-4px);
+  box-shadow: 5px 5px 0 0 var(--crm-black), var(--crm-shadow-soft);
+}
+
+/* центральний тариф — чорний, виступає вгору */
+.audit_crm_integration .crm_tariffs__itm--accent {
+  background: var(--crm-black);
+  color: var(--crm-white);
+  border-color: var(--crm-black);
+  box-shadow: 7px 7px 0 0 var(--crm-accent);
+}
+.audit_crm_integration .crm_tariffs__itm--accent::after {
+  background: var(--crm-paper);
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_tariffs__itm--accent {
+    -webkit-transform: translateY(-14px);
+    transform: translateY(-14px);
+    padding: 34px 26px;
+  }
+  .audit_crm_integration .crm_tariffs__itm--accent:hover {
+    -webkit-transform: translateY(-18px);
+    transform: translateY(-18px);
+    box-shadow: 9px 9px 0 0 var(--crm-accent), var(--crm-shadow-soft);
+  }
+}
+.audit_crm_integration .crm_tariffs__itm--accent .crm_tariffs__itm-slogan,
+.audit_crm_integration .crm_tariffs__itm--accent .crm_tariffs__itm-term {
+  color: var(--crm-white);
+  opacity: 0.7;
+}
+.audit_crm_integration .crm_tariffs__itm--accent .crm_tariffs__itm-features li {
+  color: var(--crm-white);
+  opacity: 0.9;
+}
+.audit_crm_integration .crm_tariffs__itm--accent .crm_tariffs__itm-name {
+  color: var(--crm-accent);
+}
+
+/* бейдж «Рекомендуємо» */
+.audit_crm_integration .crm_tariffs__itm-badge {
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+  margin-bottom: -4px;
+  padding: 6px 12px;
+  background: var(--crm-accent);
+  color: var(--crm-white);
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  -webkit-clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+.audit_crm_integration .crm_tariffs__itm-name {
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_tariffs__itm-name {
+    font-size: 24px;
+  }
+}
+
+.audit_crm_integration .crm_tariffs__itm-slogan {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--crm-hair);
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--crm-text);
+}
+
+.audit_crm_integration .crm_tariffs__itm-features {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+}
+.audit_crm_integration .crm_tariffs__itm-features li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--crm-text);
+}
+.audit_crm_integration .crm_tariffs__itm-features li::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  background: var(--crm-accent);
+  -webkit-clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+          clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+
+.audit_crm_integration .crm_tariffs__itm-price {
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_tariffs__itm-price {
+    font-size: 32px;
+  }
+}
+
+.audit_crm_integration .crm_tariffs__itm-term {
+  margin-top: -10px;
+  font-size: 13px;
+  color: var(--crm-text);
+}
+
+.audit_crm_integration .crm_tariffs__itm-btn {
+  width: 100%;
+  min-width: 0;
+}
+
+/* мем-тумблер «оберіть два з трьох» — окрема панель */
+.audit_crm_integration .crm_tariffs__meme {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  border: 1px dashed var(--crm-black);
+  background: var(--crm-white);
+}
+.audit_crm_integration .crm_tariffs__meme--standalone {
+  margin-top: 28px;
+}
+
+.audit_crm_integration .crm_tariffs__meme-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.audit_crm_integration .crm_tariffs__meme-toggles {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.audit_crm_integration .crm_tariffs__meme-toggle {
+  position: relative;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  padding: 9px 14px 9px 34px;
+  border: 1px solid var(--crm-black);
+  background: var(--crm-white);
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--crm-black);
+  cursor: pointer;
+  -webkit-clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: background var(--crm-t-base) var(--crm-e-out), color var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_tariffs__meme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--crm-black);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  transition: background var(--crm-t-base) var(--crm-e-out), border-color var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_tariffs__meme-toggle:hover {
+  background: var(--crm-border-light);
+}
+.audit_crm_integration .crm_tariffs__meme-toggle.active {
+  background: var(--crm-black);
+  color: var(--crm-white);
+}
+.audit_crm_integration .crm_tariffs__meme-toggle.active::before {
+  background: var(--crm-accent);
+  border-color: var(--crm-accent);
+}
+
+/* даунсейл */
+.audit_crm_integration .crm_tariffs__downsale {
+  position: relative;
+  max-width: 860px;
+  margin-top: 28px;
+  padding: 18px 24px 18px 28px;
+  border: 1px solid var(--crm-hair-strong);
+  border-left: 6px solid var(--crm-accent);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--crm-text);
+  background: var(--crm-white);
+}
+.audit_crm_integration .crm_tariffs__downsale b {
+  color: var(--crm-black);
+}
+
+/* ============================================================
+   СЕКЦІЯ — crm_faq: hairline-ряди акордеону
+   ============================================================ */
+
+.audit_crm_integration .crm_faq__list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  margin-top: 30px;
+  max-width: 900px;
+  border-top: 2px solid var(--crm-black);
+}
+
+.audit_crm_integration .crm_faq__itm {
+  position: relative;
+  border-bottom: 1px solid var(--crm-border-light);
+}
+.audit_crm_integration .crm_faq__itm:last-child {
+  border-bottom: 2px solid var(--crm-black);
+}
+.audit_crm_integration .crm_faq__itm::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--crm-accent);
+  -webkit-transform: scaleY(0);
+  transform: scaleY(0);
+  -webkit-transform-origin: top;
+  transform-origin: top;
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_faq__itm:hover::before,
+.audit_crm_integration .crm_faq__itm.active::before {
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+}
+.audit_crm_integration .crm_faq__itm.active {
+  background: var(--crm-accent-08);
+}
+
+.audit_crm_integration .crm_faq__question {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 20px 56px 20px 16px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--crm-black);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--crm-t-base) var(--crm-e-out);
+}
+@media (min-width: 1024px) {
+  .audit_crm_integration .crm_faq__question {
+    font-size: 18px;
+  }
+}
+.audit_crm_integration .crm_faq__question::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--crm-black);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  -webkit-clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  transition: background var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_faq__question::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 19px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--crm-black);
+  border-bottom: 2px solid var(--crm-black);
+  -webkit-transform: translateY(-70%) rotate(45deg);
+  transform: translateY(-70%) rotate(45deg);
+  transition: -webkit-transform var(--crm-t-base) var(--crm-e-out);
+  transition: transform var(--crm-t-base) var(--crm-e-out), border-color var(--crm-t-base) var(--crm-e-out);
+}
+.audit_crm_integration .crm_faq__question:hover {
+  color: var(--crm-accent);
+}
+.audit_crm_integration .crm_faq__itm.active .crm_faq__question::before {
+  background: var(--crm-black);
+}
+.audit_crm_integration .crm_faq__itm.active .crm_faq__question::after {
+  border-color: var(--crm-white);
+  -webkit-transform: translateY(-30%) rotate(225deg);
+  transform: translateY(-30%) rotate(225deg);
+}
+
+.audit_crm_integration .crm_faq__answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--crm-t-slow) var(--crm-e-out);
+}
+.audit_crm_integration .crm_faq__answer p {
+  margin: 0;
+  max-width: 760px;
+  padding: 0 16px 22px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--crm-text);
+}
+
+.audit_crm_integration .crm_faq__subtitle {
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  margin-top: 40px;
+  padding: 10px 18px;
+  background: var(--crm-black);
+  color: var(--crm-white);
+  font-family: DrukWideCyWeb, serif;
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  -webkit-clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+          clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+/* ============================================================
+   Кейси — моноширинні цифри для count-up без «дрижання»
+   ============================================================ */
+
+.audit_crm_integration .growth__val,
+.audit_crm_integration .audit_results__itm-results__val {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ============================================================
+   Спільне: AOS-дистанція, focus, reduced-motion
+   ============================================================ */
+
+/* зменшуємо стандартну (надто велику) дистанцію AOS */
+.audit_crm_integration [data-aos="fade-up"] {
+  -webkit-transform: translate3d(0, 18px, 0);
+  transform: translate3d(0, 18px, 0);
+}
+.audit_crm_integration [data-aos="fade-up"].aos-animate {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* focus-стани (квадратний ring — технічний почерк) */
+.audit_crm_integration a:focus-visible,
+.audit_crm_integration button:focus-visible,
+.audit_crm_integration .audit__input:focus-visible {
+  outline: 2px solid var(--crm-accent);
+  outline-offset: 2px;
+}
+.audit_crm_integration .crm_faq__question:focus-visible {
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit_crm_integration *,
+  .audit_crm_integration *::before,
+  .audit_crm_integration *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .audit_crm_integration [data-aos] {
+    opacity: 1 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+}
